@@ -56,6 +56,4 @@ public class ItemService {
         List<Item> items = itemStorage.foundAvailableItemWithNameOrDescription(description);
         return itemMapper.mapToItemsDto(items);
     }
-
-
 }

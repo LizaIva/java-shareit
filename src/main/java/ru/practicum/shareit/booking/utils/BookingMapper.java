@@ -31,6 +31,9 @@ public class BookingMapper {
     }
 
     public List<BookingDto> mapToBookingsDto(List<Booking> bookings) {
+        if (bookings == null) {
+            return null;
+        }
         List<BookingDto> bookingsDto = new ArrayList<>();
         for (Booking booking : bookings) {
             bookingsDto.add(mapToBookingDto(booking));

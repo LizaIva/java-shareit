@@ -139,10 +139,6 @@ public class BookingStorageImpl implements BookingStorage {
             return null;
         }
 
-        if (itemIdToBookings.get(itemId) == null) {
-            return null;
-        }
-
         return itemIdToBookings.get(itemId);
     }
 

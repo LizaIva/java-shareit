@@ -26,7 +26,6 @@ public class FeedbackService {
         checkAccess(feedback.getBookingId());
         Feedback savedFeedback = feedbackStorage.put(feedback);
         return feedbackMapper.mapToFeedbackDto(savedFeedback);
-
     }
 
     public FeedbackDto getFeedbackById(Integer feedbackId) {

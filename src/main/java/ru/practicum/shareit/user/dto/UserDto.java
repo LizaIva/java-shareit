@@ -16,4 +16,13 @@ public class UserDto {
     @NotEmpty(message = "Email не может быть пустым")
     @Email(message = "Введнный email не правильного формата")
     private String email;
+
+
+    public UserDto(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public UserDto() {
+    }
 }

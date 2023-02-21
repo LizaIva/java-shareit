@@ -10,4 +10,12 @@ public class UpdateUserDto {
 
     @Email(message = "Введнный email не правильного формата")
     private String email;
+
+    public UpdateUserDto(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public UpdateUserDto() {
+    }
 }

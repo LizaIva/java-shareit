@@ -2,7 +2,6 @@ package ru.practicum.shareit.feedback.model;
 
 import lombok.Data;
 
-
 @Data
 public class Feedback {
     Integer id;

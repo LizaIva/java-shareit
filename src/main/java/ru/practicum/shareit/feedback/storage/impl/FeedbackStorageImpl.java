@@ -25,7 +25,6 @@ public class FeedbackStorageImpl implements FeedbackStorage {
     private final Map<Integer, List<Feedback>> itemIdFeedbacks = new HashMap<>();
     private final Map<Integer, List<Feedback>> usersIdFeedbacks = new HashMap<>();
 
-
     int counter = 0;
 
     @Override
@@ -74,8 +73,6 @@ public class FeedbackStorageImpl implements FeedbackStorage {
             throw new UnknownDataException("Feedback с id = " + id + " не найден.");
         }
     }
-
-
 }
 
 

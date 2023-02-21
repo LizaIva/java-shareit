@@ -55,12 +55,7 @@ public class ItemController {
         log.info("Запрос предметов по ключевому слову {}", text);
         return itemService.foundAvailableItemWithNameOrDescription(text);
     }
-
 }
-
-
-// На случай, если нужной вещи на сервисе нет, у пользователей должна быть возможность оставлять запросы.
-// По запросу можно будет добавлять новые вещи для шеринга.
 
 
 
