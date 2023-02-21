@@ -24,7 +24,7 @@ public class ItemRequestServiceTest {
 
     @Test
     @DisplayName("Создание запроса")
-    public void putAndGetRequestTest(){
+    public void putAndGetRequestTest() {
         UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         ItemRequestDto itemRequestDto = itemRequestService.put(new ItemRequestDto("Срочно нужна норвковая шуба", userDto.getId()));
         assertEquals(itemRequestDto, itemRequestService.get(itemRequestDto.getId()), "не верно получены данные о запросе");
@@ -32,7 +32,7 @@ public class ItemRequestServiceTest {
 
     @Test
     @DisplayName("Удаление запроса")
-    public void deleteRequestTest(){
+    public void deleteRequestTest() {
         UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         ItemRequestDto itemRequestDto = itemRequestService.put(new ItemRequestDto("Срочно нужна норвковая шуба", userDto.getId()));
         itemRequestService.delete(itemRequestDto.getId());

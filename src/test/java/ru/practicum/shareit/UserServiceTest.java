@@ -14,7 +14,8 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -24,7 +25,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Добавление и получение пользователя")
-    void creatAndGetUserTest(){
+    void creatAndGetUserTest() {
         UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         assertEquals(userDto, userService.get(userDto.getId()), "не верно получены данные о пользователе");
         assertEquals(List.of(userDto), userService.getAll(), "неверное количество пользователей в базе");
@@ -32,7 +33,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Добавление и получение пользователя c почтой, которая уже используется")
-    void creatUserWithDuplicateEmailTest(){
+    void creatUserWithDuplicateEmailTest() {
         UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         assertThrows(EmailValidationException.class, () ->
                 userService.put(new UserDto("Masha", "iva-iva@mail.ru")));
@@ -40,7 +41,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Обновление данных пользователя")
-    void updateUserTest(){
+    void updateUserTest() {
         UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         UserDto updatedUser = userService.update(userDto.getId(), new UpdateUserDto("Masha", "iva-ivaiva@bk,ru"));
 
@@ -49,7 +50,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Обновление данных пользователя с использованием уже занятой почты")
-    void updateUserWithDuplicateEmailTest(){
+    void updateUserWithDuplicateEmailTest() {
         UserDto userDto1 = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
 
         UserDto userDto2 = userService.put(new UserDto("Masha", "ya@mail.ru"));
@@ -59,7 +60,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Удаление пользовтаеля")
-    void deleteUserTest(){
+    void deleteUserTest() {
         UserDto userDto1 = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         int id1 = userDto1.getId();
         UserDto userDto2 = userService.put(new UserDto("Masha", "ya@mail.ru"));

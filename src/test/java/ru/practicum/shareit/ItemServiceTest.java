@@ -73,24 +73,24 @@ class ItemServiceTest {
     }
 
     @Test
-	@DisplayName("Поиск предмета")
+    @DisplayName("Поиск предмета")
     void foundAvailableItemWithNameOrDescriptionTest() {
-		UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
+        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
 
-		ItemDto itemDto1 = itemService.put(userDto.getId(), new ItemDto("дрель", "очень мощная", true));
-		ItemDto itemDto2 = itemService.put(userDto.getId(), new ItemDto("коньки", "как новые", true));
-		ItemDto itemDto3 = itemService.put(userDto.getId(), new ItemDto("дрель ультра", "очень мощная", false));
-		ItemDto itemDto4 = itemService.put(userDto.getId(), new ItemDto("ДРЕль", "очень мощная", true));
-		ItemDto itemDto5 = itemService.put(userDto.getId(), new ItemDto("дрель", "ДРЕЛЬ самая классная", true));
+        ItemDto itemDto1 = itemService.put(userDto.getId(), new ItemDto("дрель", "очень мощная", true));
+        ItemDto itemDto2 = itemService.put(userDto.getId(), new ItemDto("коньки", "как новые", true));
+        ItemDto itemDto3 = itemService.put(userDto.getId(), new ItemDto("дрель ультра", "очень мощная", false));
+        ItemDto itemDto4 = itemService.put(userDto.getId(), new ItemDto("ДРЕль", "очень мощная", true));
+        ItemDto itemDto5 = itemService.put(userDto.getId(), new ItemDto("дрель", "ДРЕЛЬ самая классная", true));
 
-		List<ItemDto> itemsDto= itemService.foundAvailableItemWithNameOrDescription("дрель");
-		assertEquals(3, itemsDto.size());
-		assertTrue(itemsDto.contains(itemDto1));
-		assertFalse(itemsDto.contains(itemDto2));
-		assertFalse(itemsDto.contains(itemDto3));
-		assertTrue(itemsDto.contains(itemDto4));
-		assertTrue(itemsDto.contains(itemDto5));
+        List<ItemDto> itemsDto = itemService.foundAvailableItemWithNameOrDescription("дрель");
+        assertEquals(3, itemsDto.size());
+        assertTrue(itemsDto.contains(itemDto1));
+        assertFalse(itemsDto.contains(itemDto2));
+        assertFalse(itemsDto.contains(itemDto3));
+        assertTrue(itemsDto.contains(itemDto4));
+        assertTrue(itemsDto.contains(itemDto5));
 
-	}
+    }
 
 }

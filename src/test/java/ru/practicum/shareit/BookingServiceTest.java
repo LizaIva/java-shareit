@@ -33,7 +33,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Создание букинга")
-    void createBookingTest(){
+    void createBookingTest() {
         UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
         UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
@@ -50,7 +50,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Изменение статуса букинга")
-    void updateStatusTest(){
+    void updateStatusTest() {
         UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
         UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
@@ -66,7 +66,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Изменение статуса букинга НЕ владельцем предмета")
-    void updateStatusByNotOwnerTest(){
+    void updateStatusByNotOwnerTest() {
         UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
         UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
@@ -81,7 +81,7 @@ public class BookingServiceTest {
 
     @Test
     @DisplayName("Создание букинга на занятое время")
-    void createBookingForUnavailableTime(){
+    void createBookingForUnavailableTime() {
         UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
         ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
         UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
