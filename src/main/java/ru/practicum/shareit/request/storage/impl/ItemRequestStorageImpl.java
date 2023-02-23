@@ -15,13 +15,15 @@ import java.util.Map;
 @Slf4j
 @Component
 public class ItemRequestStorageImpl implements ItemRequestStorage {
+    private static final String ITEM_REQUEST_NOT_FOUND = "ItemRequest с id = %s не найден.";
+    private static final String NOT_EXIST = "Нельзя сохранить запрос без данных";
     private final Map<Integer, ItemRequest> itemRequests = new HashMap<>();
     private int counter = 0;
 
     @Override
     public ItemRequest put(ItemRequest itemRequest) {
         if (itemRequest == null) {
-            throw new UnknownDataException("Нельзя сохранить запрос без данных");
+            throw new UnknownDataException(NOT_EXIST);
         }
 
         if (itemRequest.getId() == null) {
@@ -34,7 +36,6 @@ public class ItemRequestStorageImpl implements ItemRequestStorage {
 
         itemRequests.put(itemRequest.getId(), itemRequest);
         return itemRequest;
-
     }
 
     @Override
@@ -52,7 +53,6 @@ public class ItemRequestStorageImpl implements ItemRequestStorage {
     public ItemRequest delete(Integer id) {
         checkItemRequest(id);
         return itemRequests.remove(id);
-
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ItemRequestStorageImpl implements ItemRequestStorage {
         ItemRequest itemRequest = itemRequests.get(id);
         if (itemRequest == null) {
             log.info("ItemRequest с id = {} не найден.", id);
-            throw new UnknownDataException("ItemRequest с id = " + id + " не найден.");
+            throw new UnknownDataException(String.format(ITEM_REQUEST_NOT_FOUND, id));
         }
     }
 }

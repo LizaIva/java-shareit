@@ -8,27 +8,28 @@ import ru.practicum.shareit.exception.UnknownDataException;
 import ru.practicum.shareit.item.dto.UpdatedItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ItemStorageImpl implements ItemStorage {
+    private static final String USER_NOT_OWNER_OF_THIS_ITEM_MSG = "item с id = %s не принадлежит пользователю с id = %s";
+    private static final String SAVING_EMPTY_ITEM_MSG = "Нельзя сохранить пустой предмет";
+    private static final String ITEM_NOT_FOUND_MSG = "item с id = %s не найден.";
+
     private final UserStorage userStorage;
 
     private final Map<Integer, Item> items = new HashMap<>();
+    private final Map<Integer, Set<Integer>> ownerToItems = new HashMap<>();
     private int counter = 0;
 
     @Override
     public Item put(Integer ownerId, Item item) {
         if (item == null) {
-            throw new UnknownDataException("Нельзя сохранить пустой предмет");
+            throw new UnknownDataException(SAVING_EMPTY_ITEM_MSG);
         }
 
         if (item.getId() == null) {
@@ -83,13 +84,13 @@ public class ItemStorageImpl implements ItemStorage {
     @Override
     public List<Item> getAllOwnersItems(Integer ownerId) {
         userStorage.checkUser(ownerId);
-        User user = userStorage.getUserById(ownerId);
-        if (user.getItemsIds().isEmpty()) {
+        Set<Integer> ownerItems = ownerToItems.get(ownerId);
+        if (ownerItems == null || ownerItems.isEmpty()) {
             return null;
         }
 
         List<Item> usersItems = new ArrayList<>();
-        for (Integer id : user.getItemsIds()) {
+        for (Integer id : ownerItems) {
             Item item = items.get(id);
             usersItems.add(item);
         }
@@ -127,7 +128,6 @@ public class ItemStorageImpl implements ItemStorage {
         return new ArrayList<>(items.values());
     }
 
-
     @Override
     public Item deleteById(Integer id) {
         checkItem(id);
@@ -139,22 +139,26 @@ public class ItemStorageImpl implements ItemStorage {
         Item item = items.get(id);
         if (item == null) {
             log.info("item с id = {} не найден.", id);
-            throw new UnknownDataException("item с id = " + id + " не найден.");
+            throw new UnknownDataException(String.format(ITEM_NOT_FOUND_MSG, id));
         }
     }
 
     @Override
     public void putItemToOwner(int ownerId, int itemId) {
-        User user = userStorage.getUserById(ownerId);
-        user.getItemsIds().add(itemId);
+        if (!ownerToItems.containsKey(ownerId)) {
+            ownerToItems.put(ownerId, new HashSet<>(Set.of(itemId)));
+        } else {
+            Set<Integer> items = ownerToItems.get(ownerId);
+            items.add(itemId);
+        }
     }
 
     @Override
     public void checkItemOwner(int ownerId, int itemId) {
-        User user = userStorage.getUserById(ownerId);
-        if (!user.getItemsIds().contains(itemId)) {
+        Set<Integer> ownerItems = ownerToItems.get(ownerId);
+        if (ownerItems == null || ownerItems.isEmpty() || !ownerItems.contains(itemId)) {
             log.info("item с id = {} не принадлежит пользователю с id = {}", itemId, ownerId);
-            throw new CheckOwnerException("item с id = " + itemId + " не принадлежит пользователю с id = " + ownerId);
+            throw new CheckOwnerException(String.format(USER_NOT_OWNER_OF_THIS_ITEM_MSG, itemId, ownerId));
         }
     }
 }

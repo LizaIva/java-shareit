@@ -18,6 +18,8 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class FeedbackStorageImpl implements FeedbackStorage {
+    private static final String FEEDBACK_NOT_FOUND_MSG = "Feedback с id = %s не найден.";
+
     private final UserStorage userStorage;
     private final ItemStorage itemStorage;
 
@@ -70,7 +72,7 @@ public class FeedbackStorageImpl implements FeedbackStorage {
         Feedback feedback = feedbacks.get(id);
         if (feedback == null) {
             log.info("Feedback с id = {} не найден.", id);
-            throw new UnknownDataException("Feedback с id = " + id + " не найден.");
+            throw new UnknownDataException(String.format(FEEDBACK_NOT_FOUND_MSG, id));
         }
     }
 }

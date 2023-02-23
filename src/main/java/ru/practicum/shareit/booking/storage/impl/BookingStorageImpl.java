@@ -18,6 +18,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BookingStorageImpl implements BookingStorage {
+    private static final String NOT_FOUND_BOOKING_MSG = "Booking с id = %s не найден.";
+    private static final String BOOKING_NOT_EXIST_MSG = "Данного букинга не существует";
+
     private final UserStorage userStorage;
     private final ItemStorage itemStorage;
 
@@ -74,7 +77,6 @@ public class BookingStorageImpl implements BookingStorage {
         return bookings.get(bookingId);
     }
 
-
     @Override
     public Booking updateStatus(int bookingId, Status status, int ownerId) {
         userStorage.checkUser(ownerId);
@@ -82,7 +84,7 @@ public class BookingStorageImpl implements BookingStorage {
         Booking exsistBooking = bookings.get(bookingId);
 
         if (exsistBooking == null) {
-            throw new UnknownDataException("Данного букинга не существует");
+            throw new UnknownDataException(BOOKING_NOT_EXIST_MSG);
         }
 
         exsistBooking.setStatus(status);
@@ -142,13 +144,12 @@ public class BookingStorageImpl implements BookingStorage {
         return itemIdToBookings.get(itemId);
     }
 
-
     @Override
     public void checkBooking(int id) {
         Booking booking = bookings.get(id);
         if (booking == null) {
             log.info("Booking с id = {} не найден.", id);
-            throw new UnknownDataException("Booking с id = " + id + " не найден.");
+            throw new UnknownDataException(String.format(NOT_FOUND_BOOKING_MSG, id));
         }
     }
 }

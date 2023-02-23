@@ -21,12 +21,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserServiceTest {
+
     private final UserService userService;
 
     @Test
     @DisplayName("Добавление и получение пользователя")
     void creatAndGetUserTest() {
-        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
         assertEquals(userDto, userService.get(userDto.getId()), "не верно получены данные о пользователе");
         assertEquals(List.of(userDto), userService.getAll(), "неверное количество пользователей в базе");
     }
@@ -34,16 +39,32 @@ public class UserServiceTest {
     @Test
     @DisplayName("Добавление и получение пользователя c почтой, которая уже используется")
     void creatUserWithDuplicateEmailTest() {
-        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
         assertThrows(EmailValidationException.class, () ->
-                userService.put(new UserDto("Masha", "iva-iva@mail.ru")));
+                userService.put(UserDto.builder()
+                        .name("Masha")
+                        .email("iva-iva@mail.ru")
+                        .build()));
     }
 
     @Test
     @DisplayName("Обновление данных пользователя")
     void updateUserTest() {
-        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        UserDto updatedUser = userService.update(userDto.getId(), new UpdateUserDto("Masha", "iva-ivaiva@bk,ru"));
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
+
+        UserDto updatedUser = userService.update(userDto.getId(), UpdateUserDto.builder()
+                .name("Masha")
+                .email("iva-ivaiva@bk,ru")
+                .build()
+        );
 
         assertEquals(updatedUser, userService.get(userDto.getId()), "Не верное обновление данных");
     }
@@ -51,19 +72,41 @@ public class UserServiceTest {
     @Test
     @DisplayName("Обновление данных пользователя с использованием уже занятой почты")
     void updateUserWithDuplicateEmailTest() {
-        UserDto userDto1 = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
+        UserDto userDto1 = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        UserDto userDto2 = userService.put(new UserDto("Masha", "ya@mail.ru"));
+        UserDto userDto2 = userService.put(UserDto.builder()
+                .name("Masha")
+                .email("ya@mail.ru")
+                .build()
+        );
+
         assertThrows(EmailValidationException.class, () ->
-                userService.update(userDto2.getId(), new UpdateUserDto("Masha", "iva-iva@mail.ru")));
+                userService.update(userDto2.getId(), UpdateUserDto.builder()
+                        .name("Masha")
+                        .email("iva-iva@mail.ru")
+                        .build()
+                ));
     }
 
     @Test
     @DisplayName("Удаление пользовтаеля")
     void deleteUserTest() {
-        UserDto userDto1 = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
+        UserDto userDto1 = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
         int id1 = userDto1.getId();
-        UserDto userDto2 = userService.put(new UserDto("Masha", "ya@mail.ru"));
+
+        UserDto userDto2 = userService.put(UserDto.builder()
+                .name("Masha")
+                .email("ya@mail.ru")
+                .build()
+        );
 
         List<UserDto> usersDto1 = userService.getAll();
         assertEquals(2, usersDto1.size(), "Пользователи не сохранены");

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.feedback.dto.FeedbackDto;
-import ru.practicum.shareit.feedback.service.FeedbackService;
+import ru.practicum.shareit.feedback.service.impl.FeedbackServiceImpl;
 
 import javax.validation.Valid;
 
@@ -13,7 +13,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/feedbacks")
 public class FeedbackController {
-    private final FeedbackService feedbackService;
+    private final FeedbackServiceImpl feedbackService;
 
     @PostMapping
     public FeedbackDto create(@RequestBody @Valid FeedbackDto feedbackDto) {

@@ -11,23 +11,23 @@ import java.util.List;
 @Component
 public class BookingMapper {
     public BookingDto mapToBookingDto(Booking booking) {
-        BookingDto bookingDto = new BookingDto();
-        bookingDto.setId(booking.getId());
-        bookingDto.setItemId(booking.getItemId());
-        bookingDto.setStart(booking.getStart());
-        bookingDto.setEnd(booking.getEnd());
-        bookingDto.setStatus(booking.getStatus());
-        return bookingDto;
+        return BookingDto.builder()
+                .id(booking.getId())
+                .itemId(booking.getItemId())
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .status(booking.getStatus())
+                .build();
     }
 
     public Booking mapToBooking(BookingDto bookingDto) {
-        Booking booking = new Booking();
-        booking.setId(bookingDto.getId());
-        booking.setItemId(bookingDto.getItemId());
-        booking.setStart(bookingDto.getStart());
-        booking.setEnd(bookingDto.getEnd());
-        booking.setStatus(bookingDto.getStatus());
-        return booking;
+        return Booking.builder()
+                .id(bookingDto.getId())
+                .itemId(bookingDto.getItemId())
+                .start(bookingDto.getStart())
+                .end(bookingDto.getEnd())
+                .status(bookingDto.getStatus())
+                .build();
     }
 
     public List<BookingDto> mapToBookingsDto(List<Booking> bookings) {

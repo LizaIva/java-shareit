@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BookingServiceTest {
+
     private final ItemService itemService;
     private final UserService userService;
     private final BookingService bookingService;
@@ -34,12 +35,31 @@ public class BookingServiceTest {
     @Test
     @DisplayName("Создание букинга")
     void createBookingTest() {
-        UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
-        UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        BookingDto bookingDto = bookingService.put(new BookingDto(LocalDateTime.of(2034, 10, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId());
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
+
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Nikita")
+                .email("ya@bk.ru")
+                .build()
+        );
+
+        BookingDto bookingDto = bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 14, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId());
 
         assertEquals(bookingDto, bookingService.getBookingById(bookingDto.getId()), "не верно получены данные о букинге");
         assertEquals(List.of(bookingDto), bookingService.getBookersAllBooking(userDto.getId()), "неверное количество букингов в базе");
@@ -51,14 +71,37 @@ public class BookingServiceTest {
     @Test
     @DisplayName("Изменение статуса букинга")
     void updateStatusTest() {
-        UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
-        UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        BookingDto bookingDto = bookingService.put(new BookingDto(LocalDateTime.of(2034, 10, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId());
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
 
-        UpdateBookingStatusDto updatedBookingStatusDto = new UpdateBookingStatusDto(bookingDto.getId(), Status.APPROVED, itemDto.getId());
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Nikita")
+                .email("ya@bk.ru")
+                .build()
+        );
+
+        BookingDto bookingDto = bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 14, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId());
+
+        UpdateBookingStatusDto updatedBookingStatusDto = UpdateBookingStatusDto.builder()
+                .id(bookingDto.getId())
+                .status(Status.APPROVED)
+                .itemId(itemDto.getId())
+                .build();
         BookingDto updatedBookingDto = bookingService.updateStatus(updatedBookingStatusDto, ownerDto.getId());
 
         assertEquals(Status.APPROVED, bookingService.getBookingById(bookingDto.getId()).getStatus(), "Не произошло изменение статуса букинга");
@@ -67,14 +110,38 @@ public class BookingServiceTest {
     @Test
     @DisplayName("Изменение статуса букинга НЕ владельцем предмета")
     void updateStatusByNotOwnerTest() {
-        UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
-        UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        BookingDto bookingDto = bookingService.put(new BookingDto(LocalDateTime.of(2034, 10, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId());
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
 
-        UpdateBookingStatusDto updatedBookingStatusDto = new UpdateBookingStatusDto(bookingDto.getId(), Status.APPROVED, itemDto.getId());
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Nikita")
+                .email("ya@bk.ru")
+                .build()
+        );
+
+        BookingDto bookingDto = bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 14, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId());
+
+        UpdateBookingStatusDto updatedBookingStatusDto = UpdateBookingStatusDto.builder()
+                .id(bookingDto.getId())
+                .status(Status.APPROVED)
+                .itemId(itemDto.getId())
+                .build();
+
         assertThrows(CheckOwnerException.class, () ->
                 bookingService.updateStatus(updatedBookingStatusDto, userDto.getId()));
     }
@@ -82,27 +149,58 @@ public class BookingServiceTest {
     @Test
     @DisplayName("Создание букинга на занятое время")
     void createBookingForUnavailableTime() {
-        UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
-        UserDto userDto = userService.put(new UserDto("Nikita", "ya@bk.ru"));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        BookingDto bookingDto = bookingService.put(new BookingDto(LocalDateTime.of(2034, 10, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId());
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
 
-        assertThrows(ValidationException.class, () -> bookingService.put(new BookingDto(LocalDateTime.of(2034, 10, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId()));
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Nikita")
+                .email("ya@bk.ru")
+                .build()
+        );
 
-        assertThrows(ValidationException.class, () -> bookingService.put(new BookingDto(LocalDateTime.of(2033, 10, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId()));
+        BookingDto bookingDto = bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 14, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId());
 
-        assertThrows(ValidationException.class, () -> bookingService.put(new BookingDto(LocalDateTime.of(2034, 12, 14, 8, 23),
-                LocalDateTime.of(2034, 11, 14, 8, 23), itemDto.getId()), userDto.getId()));
+        assertThrows(ValidationException.class, () -> bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 14, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId()));
 
-        assertThrows(ValidationException.class, () -> bookingService.put(new BookingDto(LocalDateTime.of(2032, 10, 14, 8, 23),
-                LocalDateTime.of(2035, 11, 14, 8, 23), itemDto.getId()), userDto.getId()));
+        assertThrows(ValidationException.class, () -> bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2033, 10, 14, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId()));
 
-        assertThrows(ValidationException.class, () -> bookingService.put(new BookingDto(LocalDateTime.of(2034, 10, 16, 8, 23),
-                LocalDateTime.of(2034, 11, 9, 8, 23), itemDto.getId()), userDto.getId()));
+        assertThrows(ValidationException.class, () -> bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 26, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 14, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId()));
+
+        assertThrows(ValidationException.class, () -> bookingService.put(BookingDto.builder()
+                        .start(LocalDateTime.of(2034, 10, 28, 8, 23))
+                        .end(LocalDateTime.of(2034, 11, 6, 8, 23))
+                        .itemId(itemDto.getId())
+                        .build(),
+                userDto.getId()));
     }
-
 }

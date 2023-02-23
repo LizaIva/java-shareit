@@ -13,14 +13,19 @@ import java.util.*;
 @Slf4j
 @Component
 public class UserStorageImpl implements UserStorage {
+    private static final String EMAIL_ALREADY_USED = "email %s уже используется";
+    private static final String USER_NOT_FOUND = "user с id = %s не найден.";
+    private static final String NOT_EXIST = "Нельзя сохранить пользователя без данных";
+
     private final Map<Integer, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
+
     private int counter = 0;
 
     @Override
     public User put(User user) {
         if (user == null) {
-            throw new UnknownDataException("Нельзя сохранить пользователя без данных");
+            throw new UnknownDataException(NOT_EXIST);
         }
         checkUserEmail(user.getEmail());
 
@@ -29,7 +34,6 @@ public class UserStorageImpl implements UserStorage {
         }
         users.put(user.getId(), user);
         return user;
-
     }
 
     @Override
@@ -82,14 +86,14 @@ public class UserStorageImpl implements UserStorage {
         User user = users.get(id);
         if (user == null) {
             log.info("user с id = {} не найден.", id);
-            throw new UnknownDataException("user с id = " + id + " не найден.");
+            throw new UnknownDataException(String.format(USER_NOT_FOUND, id));
         }
     }
 
     private void checkUserEmail(String email) {
         if (!emails.add(email)) {
             log.info("email {} уже существует.", email);
-            throw new EmailValidationException("email " + email + " уже используется");
+            throw new EmailValidationException(String.format(EMAIL_ALREADY_USED, email));
         }
     }
 }

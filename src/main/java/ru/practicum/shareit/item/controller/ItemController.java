@@ -10,16 +10,19 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.header.HeaderConst.USER_ID_HEADER;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
+
     private final ItemService itemService;
 
     @PostMapping
     public ItemDto create(
-            @RequestHeader("X-Sharer-User-Id") Integer ownerId,
+            @RequestHeader(USER_ID_HEADER) Integer ownerId,
             @RequestBody @Valid ItemDto itemDto) {
         log.info("Получен запрос на создание предмета");
         return itemService.put(ownerId, itemDto);
@@ -27,17 +30,16 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto update(
-            @RequestHeader("X-Sharer-User-Id") Integer ownerId,
+            @RequestHeader(USER_ID_HEADER) Integer ownerId,
             @PathVariable Integer itemId,
             @RequestBody @Valid UpdatedItemDto updatedItemDto) {
         log.info("Получен запрос на обновление предмета");
         return itemService.update(ownerId, itemId, updatedItemDto);
     }
 
-
     @GetMapping("/{itemId}")
     public ItemDto getItemById(
-            @RequestHeader("X-Sharer-User-Id") Integer ownerId,
+            @RequestHeader(USER_ID_HEADER) Integer ownerId,
             @PathVariable Integer itemId
     ) {
         log.info("Получен запрос предмета с id = {}", itemId);
@@ -45,7 +47,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getOwnersItems(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
+    public List<ItemDto> getOwnersItems(@RequestHeader(USER_ID_HEADER) Integer ownerId) {
         log.info("Получен запрос все предметов пользователя с id = {}", ownerId);
         return itemService.getOwnersItems(ownerId);
     }

@@ -1,21 +1,24 @@
 package ru.practicum.shareit.feedback.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
+@Builder
 @Data
 public class FeedbackDto {
-    Integer id;
+
+    private Integer id;
 
     @NotNull
-    Integer userId;
+    private Integer userId;
 
     @NotNull
-    Integer itemId;
+    private Integer itemId;
 
     @NotNull
-    Integer bookingId;
+    private Integer bookingId;
 
-    String comment;
+    private String comment;
 }

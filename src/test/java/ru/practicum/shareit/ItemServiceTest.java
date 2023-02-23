@@ -21,28 +21,64 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ItemServiceTest {
+
     private final ItemService itemService;
     private final UserService userService;
 
     @Test
     @DisplayName("Создание предмета")
     void createAndGetItemTest() {
-        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        ItemDto itemDto = itemService.put(userDto.getId(), new ItemDto("дрель", "очень мощная", true));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
+
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
+
         assertEquals(itemDto, itemService.getItemById(itemDto.getId()), "не верно получены данные о предмете");
     }
 
     @Test
     @DisplayName("Создание предметов у разных владельцев")
     void createAndGetItemsFromDifferentOwnersTest() {
-        UserDto userDto1 = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        UserDto userDto2 = userService.put(new UserDto("Masha", "ya@mail.ru"));
+        UserDto userDto1 = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        ItemDto users1ItemDto1 = itemService.put(userDto1.getId(), new ItemDto("дрель", "очень мощная", true));
-        ItemDto users1ItemDto2 = itemService.put(userDto1.getId(), new ItemDto("коньки", "как новые", true));
+        UserDto userDto2 = userService.put(UserDto.builder()
+                .name("Masha")
+                .email("ya@mail.ru")
+                .build()
+        );
 
-        ItemDto users2ItemDto1 = itemService.put(userDto2.getId(), new ItemDto("самокат", "супер быстрый", true));
+        ItemDto users1ItemDto1 = itemService.put(userDto1.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
 
+        ItemDto users1ItemDto2 = itemService.put(userDto1.getId(), ItemDto.builder()
+                .name("коньки")
+                .description("как новые")
+                .available(true)
+                .build()
+        );
+
+        ItemDto users2ItemDto1 = itemService.put(userDto2.getId(), ItemDto.builder()
+                .name("самокат")
+                .description("хороший")
+                .available(true)
+                .build()
+        );
         List<ItemDto> users1Items = itemService.getOwnersItems(userDto1.getId());
         assertEquals(2, users1Items.size());
 
@@ -53,35 +89,97 @@ class ItemServiceTest {
     @Test
     @DisplayName("Обновление статуса предмета")
     void updateStatusTest() {
-        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        ItemDto itemDto = itemService.put(userDto.getId(), new ItemDto("дрель", "очень мощная", true));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
+
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
         assertEquals(true, itemDto.getAvailable());
 
-        ItemDto updatedItemDto = itemService.update(userDto.getId(), itemDto.getId(), new UpdatedItemDto("дрель", "очень мощная", false));
+        ItemDto updatedItemDto = itemService.update(ownerDto.getId(), itemDto.getId(), UpdatedItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(false)
+                .build()
+        );
         assertEquals(false, updatedItemDto.getAvailable());
-
     }
 
     @Test
     @DisplayName("Обновление статуса предмета НЕ его владельцем")
     void updateStatusByWrongOwnerTest() {
-        UserDto ownerDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
-        UserDto userDto = userService.put(new UserDto("Nikita", "iva@mail.ru"));
-        ItemDto itemDto = itemService.put(ownerDto.getId(), new ItemDto("дрель", "очень мощная", true));
+        UserDto ownerDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
+
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Masha")
+                .email("ya@mail.ru")
+                .build()
+        );
+
+        ItemDto itemDto = itemService.put(ownerDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build()
+        );
         assertThrows(CheckOwnerException.class, () -> itemService.update(userDto.getId(), itemDto.getId(),
-                new UpdatedItemDto("дрель", "очень мощная", false)));
+                UpdatedItemDto.builder()
+                        .name("дрель")
+                        .description("очень мощная")
+                        .available(false)
+                        .build()
+        ));
     }
 
     @Test
     @DisplayName("Поиск предмета")
     void foundAvailableItemWithNameOrDescriptionTest() {
-        UserDto userDto = userService.put(new UserDto("Liza", "iva-iva@mail.ru"));
+        UserDto userDto = userService.put(UserDto.builder()
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build()
+        );
 
-        ItemDto itemDto1 = itemService.put(userDto.getId(), new ItemDto("дрель", "очень мощная", true));
-        ItemDto itemDto2 = itemService.put(userDto.getId(), new ItemDto("коньки", "как новые", true));
-        ItemDto itemDto3 = itemService.put(userDto.getId(), new ItemDto("дрель ультра", "очень мощная", false));
-        ItemDto itemDto4 = itemService.put(userDto.getId(), new ItemDto("ДРЕль", "очень мощная", true));
-        ItemDto itemDto5 = itemService.put(userDto.getId(), new ItemDto("дрель", "ДРЕЛЬ самая классная", true));
+        ItemDto itemDto1 = itemService.put(userDto.getId(), ItemDto.builder()
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .build());
+
+        ItemDto itemDto2 = itemService.put(userDto.getId(), ItemDto.builder()
+                .name("коньки")
+                .description("как новые")
+                .available(true)
+                .build());
+
+        ItemDto itemDto3 = itemService.put(userDto.getId(), ItemDto.builder()
+                .name("дрель ультра")
+                .description("очень мощная")
+                .available(false)
+                .build());
+
+        ItemDto itemDto4 = itemService.put(userDto.getId(), ItemDto.builder()
+                .name("ДРель")
+                .description("очень мощная")
+                .available(true)
+                .build());
+
+        ItemDto itemDto5 = itemService.put(userDto.getId(), ItemDto.builder()
+                .name("ДРель")
+                .description("дрель очень классная")
+                .available(true)
+                .build());
 
         List<ItemDto> itemsDto = itemService.foundAvailableItemWithNameOrDescription("дрель");
         assertEquals(3, itemsDto.size());
@@ -90,7 +188,5 @@ class ItemServiceTest {
         assertFalse(itemsDto.contains(itemDto3));
         assertTrue(itemsDto.contains(itemDto4));
         assertTrue(itemsDto.contains(itemDto5));
-
     }
-
 }

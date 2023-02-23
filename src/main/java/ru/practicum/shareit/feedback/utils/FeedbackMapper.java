@@ -8,22 +8,22 @@ import ru.practicum.shareit.feedback.model.Feedback;
 @Component
 public class FeedbackMapper {
     public FeedbackDto mapToFeedbackDto(Feedback feedback) {
-        FeedbackDto feedbackDto = new FeedbackDto();
-        feedbackDto.setId(feedback.getId());
-        feedbackDto.setItemId(feedback.getItemId());
-        feedbackDto.setUserId(feedback.getUserId());
-        feedbackDto.setBookingId(feedback.getBookingId());
-        feedbackDto.setComment(feedback.getComment());
-        return feedbackDto;
+        return FeedbackDto.builder()
+                .id(feedback.getId())
+                .itemId(feedback.getItemId())
+                .userId(feedback.getUserId())
+                .bookingId(feedback.getBookingId())
+                .comment(feedback.getComment())
+                .build();
     }
 
     public Feedback mapToFeedback(FeedbackDto feedbackDto) {
-        Feedback feedback = new Feedback();
-        feedback.setId(feedbackDto.getId());
-        feedback.setItemId(feedbackDto.getItemId());
-        feedback.setUserId(feedbackDto.getUserId());
-        feedback.setBookingId(feedbackDto.getBookingId());
-        feedback.setComment(feedbackDto.getComment());
-        return feedback;
+        return Feedback.builder()
+                .id(feedbackDto.getId())
+                .itemId(feedbackDto.getItemId())
+                .userId(feedbackDto.getUserId())
+                .bookingId(feedbackDto.getBookingId())
+                .comment(feedbackDto.getComment())
+                .build();
     }
 }

@@ -11,11 +11,14 @@ import ru.practicum.shareit.booking.service.BookingService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.header.HeaderConst.USER_ID_HEADER;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {
+
     private final BookingService bookingService;
 
     @PostMapping("/{userId}")
@@ -26,7 +29,7 @@ public class BookingController {
     }
 
     @PatchMapping("/status/change")
-    public BookingDto updateStatus(@RequestHeader("X-Sharer-User-Id") Integer ownerId,
+    public BookingDto updateStatus(@RequestHeader(USER_ID_HEADER) Integer ownerId,
                                    @RequestBody @Valid UpdateBookingStatusDto bookingDto) {
 
         log.info("Получен запрос на обновление статуса от букинга с id = {}", bookingDto.getId());
@@ -41,7 +44,7 @@ public class BookingController {
 
     @GetMapping("/owners")
     public List<BookingDto> getOwnersAllBookingsViaStatus(
-            @RequestHeader("X-Sharer-User-Id") Integer ownerId,
+            @RequestHeader(USER_ID_HEADER) Integer ownerId,
             @RequestBody Status status) {
         log.info("Получен запрос всех букингов владельца с  id = {}", ownerId);
         return bookingService.getOwnersAllBookingsViaStatus(ownerId, status);
