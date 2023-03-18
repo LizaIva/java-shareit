@@ -1,7 +1,5 @@
 package ru.practicum.shareit.item.storage.impl;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.CheckOwnerException;
@@ -71,8 +69,8 @@ public class ItemDbStorageImpl implements ItemStorage {
 
     @Override
     public void checkItemOwner(int ownerId, int itemId) {
-       if (getItemById(itemId).getOwner().getId() != ownerId){
-           throw new CheckOwnerException(String.format(USER_NOT_OWNER_OF_THIS_ITEM_MSG, itemId, ownerId));
-       }
+        if (getItemById(itemId).getOwner().getId() != ownerId) {
+            throw new CheckOwnerException(String.format(USER_NOT_OWNER_OF_THIS_ITEM_MSG, itemId, ownerId));
+        }
     }
 }

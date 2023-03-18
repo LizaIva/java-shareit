@@ -2,8 +2,6 @@ package ru.practicum.shareit.comment.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.comment.model.Comment;
@@ -13,9 +11,6 @@ import ru.practicum.shareit.exception.CheckBookerException;
 import ru.practicum.shareit.exception.UnknownDataException;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Component("commentDbStorageImpl")
 @RequiredArgsConstructor

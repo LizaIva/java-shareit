@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.storage;
 
-import ru.practicum.shareit.item.dto.UpdatedItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -9,6 +8,7 @@ public interface ItemStorage {
     String ITEM_NOT_FOUND = "item с id = %s не найден.";
     String USER_NOT_OWNER_OF_THIS_ITEM_MSG = "item с id = %s не принадлежит пользователю с id = %s";
     String SAVING_EMPTY_ITEM_MSG = "Нельзя сохранить пустой предмет";
+
     Item put(Integer ownerId, Item item);
 
     Item getItemById(Integer id);

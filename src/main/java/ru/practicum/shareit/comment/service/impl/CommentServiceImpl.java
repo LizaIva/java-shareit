@@ -9,7 +9,6 @@ import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.service.CommentService;
 import ru.practicum.shareit.comment.storage.CommentStorage;
 import ru.practicum.shareit.comment.utils.CommentMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
 
