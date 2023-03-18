@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.model;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;

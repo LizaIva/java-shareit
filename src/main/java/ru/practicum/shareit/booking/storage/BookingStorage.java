@@ -25,5 +25,4 @@ public interface BookingStorage {
     void checkBooking(int id);
 
     void checkUserItemOwnerByBookingId(int bookingId, int userId);
-
 }

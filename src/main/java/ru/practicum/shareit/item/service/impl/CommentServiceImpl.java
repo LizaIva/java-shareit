@@ -1,16 +1,14 @@
-package ru.practicum.shareit.comment.service.impl;
+package ru.practicum.shareit.item.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.comment.dto.CreateCommentDto;
-import ru.practicum.shareit.comment.model.Comment;
-import ru.practicum.shareit.comment.service.CommentService;
-import ru.practicum.shareit.comment.storage.CommentStorage;
-import ru.practicum.shareit.comment.utils.CommentMapper;
-import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.service.CommentService;
+import ru.practicum.shareit.item.storage.CommentStorage;
+import ru.practicum.shareit.item.utils.CommentMapper;
 
 @Slf4j
 @Service
@@ -19,8 +17,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentStorage commentStorage;
     private final CommentMapper commentMapper;
-    private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
 
     @Override
     public CommentDto put(Integer itemId, Integer userId, CreateCommentDto commentDto) {

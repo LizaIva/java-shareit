@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.model;
 import lombok.*;
 import org.hibernate.annotations.SortComparator;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.booking.utils.BookingMapper;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity(name = "items")
 public class Item {
+
     @Column(name = "item_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,13 +35,8 @@ public class Item {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "request_id")
-//    @Column(name = "request_id")
-//    private ItemRequest request;
-
     @OneToMany(mappedBy = "bookedItem", fetch = FetchType.LAZY)
-    @SortComparator(BookingsByStartComparator.class)
+    @SortComparator(BookingMapper.BookingsByStartComparator.class)
     private List<Booking> bookings;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)

@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdatedItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -23,7 +22,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final ItemMapper itemMapper;
     private final UserStorage userStorage;
-    private final BookingRepository bookingRepository;
 
     @Override
     public ItemDto put(Integer ownerId, ItemDto itemDto) {

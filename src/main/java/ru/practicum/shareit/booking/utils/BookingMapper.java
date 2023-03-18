@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.utils.ItemMapper;
 import ru.practicum.shareit.user.utils.UserMapper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -89,6 +90,13 @@ public class BookingMapper {
                 return List.of(2);
             default:
                 throw new UnknownDataException(String.format("Unknown state: %s", state));
+        }
+    }
+
+    public static class BookingsByStartComparator implements Comparator<Booking> {
+        @Override
+        public int compare(Booking o1, Booking o2) {
+            return o1.getStart().compareTo(o2.getEnd());
         }
     }
 }
