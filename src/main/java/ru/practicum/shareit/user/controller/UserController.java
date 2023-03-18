@@ -38,12 +38,6 @@ public class UserController {
         return userService.get(userId);
     }
 
-    @GetMapping("/list/{ids}")
-    public List<UserDto> getUsersByIds(@PathVariable Integer[] ids) {
-        log.info("Получен запрос на вывод нескольких пользователей по их id");
-        return userService.getUsersByIds(List.of(ids));
-    }
-
     @GetMapping
     public Collection<UserDto> getAllUsers() {
         log.info("Получен запрос на вывод списка всех пользователей");

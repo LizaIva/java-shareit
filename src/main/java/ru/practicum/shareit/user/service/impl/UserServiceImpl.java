@@ -1,7 +1,8 @@
 package ru.practicum.shareit.user.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -14,11 +15,16 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;
     private final UserMapper userMapper;
+
+    @Autowired
+    public UserServiceImpl(@Qualifier("userDbStorageImpl") UserStorage userStorage, UserMapper userMapper) {
+        this.userStorage = userStorage;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public UserDto put(UserDto userDto) {
@@ -32,7 +38,19 @@ public class UserServiceImpl implements UserService {
     public UserDto update(Integer userId, UpdateUserDto updateUserDto) {
         log.info("Обновление данных пользователя с id {}", userId);
 
-        User updatedUser = userStorage.updateUser(userId, updateUserDto);
+        User user = userStorage.getUserById(userId);
+
+        String name = updateUserDto.getName();
+        if (name != null && !name.isEmpty()) {
+            user.setName(name);
+        }
+
+        String email = updateUserDto.getEmail();
+        if (email != null && !email.isEmpty()) {
+            user.setEmail(email);
+        }
+
+        User updatedUser = userStorage.updateUser(user);
         return userMapper.mapToUserDto(updatedUser);
     }
 
@@ -41,13 +59,6 @@ public class UserServiceImpl implements UserService {
         log.info("Запрос пользователя с id = {}", id);
         User user = userStorage.getUserById(id);
         return userMapper.mapToUserDto(user);
-    }
-
-    @Override
-    public List<UserDto> getUsersByIds(List<Integer> ids) {
-        log.info("Запрос пользователей по их id");
-        List<User> users = userStorage.getUsersByIds(ids);
-        return userMapper.mapToUsersDto(users);
     }
 
     @Override

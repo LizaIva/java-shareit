@@ -6,15 +6,15 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 public interface UserStorage {
+
+   String USER_NOT_FOUND = "user с id = %s не найден.";
     User put(User user);
 
-    User updateUser(Integer userId, UpdateUserDto updateUserDto);
+    User updateUser(User user);
 
     User getUserById(Integer id);
 
     User deleteById(int id);
-
-    List<User> getUsersByIds(List<Integer> ids);
 
     List<User> getAll();
 
