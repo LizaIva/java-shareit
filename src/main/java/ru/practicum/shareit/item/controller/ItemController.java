@@ -3,8 +3,11 @@ package ru.practicum.shareit.item.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdatedItemDto;
+import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -19,6 +22,7 @@ import static ru.practicum.shareit.header.HeaderConst.USER_ID_HEADER;
 public class ItemController {
 
     private final ItemService itemService;
+    private final CommentService commentService;
 
     @PostMapping
     public ItemDto create(
@@ -26,6 +30,15 @@ public class ItemController {
             @RequestBody @Valid ItemDto itemDto) {
         log.info("Получен запрос на создание предмета");
         return itemService.put(ownerId, itemDto);
+    }
+
+    @PostMapping("{itemId}/comment")
+    public CommentDto createComment(
+            @PathVariable Integer itemId,
+            @RequestHeader(USER_ID_HEADER) Integer userId,
+            @RequestBody @Valid CreateCommentDto commentDto) {
+        log.info("Получен запрос на создание отзыва к предмету с id = {}", itemId);
+        return commentService.put(itemId, userId, commentDto);
     }
 
     @PatchMapping("/{itemId}")
@@ -39,11 +52,11 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(
-            @RequestHeader(USER_ID_HEADER) Integer ownerId,
+            @RequestHeader(USER_ID_HEADER) Integer userId,
             @PathVariable Integer itemId
     ) {
         log.info("Получен запрос предмета с id = {}", itemId);
-        return itemService.getItemById(itemId);
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping

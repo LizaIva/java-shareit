@@ -12,8 +12,6 @@ public interface UserService {
 
     UserDto get(Integer id);
 
-    List<UserDto> getUsersByIds(List<Integer> ids);
-
     List<UserDto> getAll();
 
     UserDto deleteUserById(Integer id);

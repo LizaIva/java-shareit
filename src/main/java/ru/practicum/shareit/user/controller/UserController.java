@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,12 +35,6 @@ public class UserController {
     public UserDto getUserById(@PathVariable Integer userId) {
         log.info("Получен запрос на вывод пользователя с id = {}", userId);
         return userService.get(userId);
-    }
-
-    @GetMapping("/list/{ids}")
-    public List<UserDto> getUsersByIds(@PathVariable Integer[] ids) {
-        log.info("Получен запрос на вывод нескольких пользователей по их id");
-        return userService.getUsersByIds(List.of(ids));
     }
 
     @GetMapping

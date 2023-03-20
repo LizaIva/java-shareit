@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.utils.ItemMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -26,10 +27,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto put(Integer ownerId, ItemDto itemDto) {
         userStorage.checkUser(ownerId);
         Item item = itemMapper.mapToItem(ownerId, itemDto);
-
         log.info("Создание предмета");
         Item savedItem = itemStorage.put(ownerId, item);
-        return itemMapper.mapToItemDto(savedItem);
+        return itemMapper.mapToItemDto(savedItem, null);
     }
 
     @Override
@@ -38,28 +38,50 @@ public class ItemServiceImpl implements ItemService {
         itemStorage.checkItem(itemId);
         itemStorage.checkItemOwner(ownerId, itemId);
         log.info("Обновление данных предмета с id {}", itemId);
-        Item updatedItem = itemStorage.updateItem(ownerId, itemId, updatedItemDto);
-        return itemMapper.mapToItemDto(updatedItem);
+
+        Item item = itemStorage.getItemById(itemId);
+
+        String name = updatedItemDto.getName();
+        if (name != null && !name.isEmpty()) {
+            item.setName(name);
+        }
+
+        String description = updatedItemDto.getDescription();
+        if (description != null && !description.isEmpty()) {
+            item.setDescription(description);
+        }
+
+        Boolean available = updatedItemDto.getAvailable();
+        if (available != null) {
+            item.setAvailable(available);
+        }
+
+        Item updatedItem = itemStorage.updateItem(ownerId, item);
+        return itemMapper.mapToItemDto(updatedItem, null);
     }
 
     @Override
-    public ItemDto getItemById(Integer id) {
-        log.info("Запрос предмета с id = {}", id);
-        Item item = itemStorage.getItemById(id);
-        return itemMapper.mapToItemDto(item);
+    public ItemDto getItemById(Integer itemId, Integer userId) {
+        log.info("Запрос предмета с id = {}", itemId);
+        Item item = itemStorage.getItemById(itemId);
+        return itemMapper.mapToItemDto(item, userId);
     }
 
     @Override
     public List<ItemDto> getOwnersItems(Integer ownerId) {
         log.info("Запрос предметов пользователя с id = {}", ownerId);
         List<Item> items = itemStorage.getAllOwnersItems(ownerId);
-        return itemMapper.mapToItemsDto(items);
+        return itemMapper.mapToItemsDto(items, ownerId);
     }
 
     @Override
     public List<ItemDto> foundAvailableItemWithNameOrDescription(String description) {
+        if (description == null || description.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         log.info("Запрос предметов по ключевому слову {}", description);
         List<Item> items = itemStorage.foundAvailableItemWithNameOrDescription(description);
-        return itemMapper.mapToItemsDto(items);
+        return itemMapper.mapToItemsDto(items, null);
     }
 }
