@@ -9,8 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.request.model.Request;
 
-import java.util.List;
-
 @Repository
 public interface RequestRepository
         extends JpaRepository<Request, Integer>,

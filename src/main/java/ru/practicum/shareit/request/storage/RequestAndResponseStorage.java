@@ -9,6 +9,7 @@ public interface RequestAndResponseStorage {
 
     String REQUEST_NOT_FOUND = "Request с id = %s не найден.";
     String NOT_EXIST = "Нельзя сохранить запрос без данных";
+
     Request put(Request request);
 
     Response put(Response response);

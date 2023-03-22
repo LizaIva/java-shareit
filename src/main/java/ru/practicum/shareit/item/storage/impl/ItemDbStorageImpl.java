@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.storage.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.CheckOwnerException;
 import ru.practicum.shareit.exception.UnknownDataException;
@@ -19,6 +21,8 @@ public class ItemDbStorageImpl implements ItemStorage {
     private final ItemRepository itemRepository;
     private final UserStorage userStorage;
 
+    private static final Sort PAGIN_SORT = Sort.by(List.of(Sort.Order.asc("item_id")));
+
     @Override
     public Item put(Integer ownerId, Item item) {
         return itemRepository.saveAndFlush(item);
@@ -31,14 +35,26 @@ public class ItemDbStorageImpl implements ItemStorage {
     }
 
     @Override
-    public List<Item> getAllOwnersItems(Integer ownerId) {
+    public List<Item> getAllOwnersItems(Integer ownerId, Integer size, Integer from) {
         userStorage.checkUser(ownerId);
-        return itemRepository.findByOwnerIdOrderById(ownerId);
+
+        if (size == null || from == null) {
+            return itemRepository.findByOwnerIdOrderById(ownerId);
+        }
+
+        return itemRepository.findByOwnerIdOrderById(ownerId, PageRequest.of(from, size, PAGIN_SORT))
+                .getContent();
     }
 
     @Override
-    public List<Item> foundAvailableItemWithNameOrDescription(String description) {
-        return itemRepository.foundAvailableItemWithNameOrDescription(description.toLowerCase());
+    public List<Item> foundAvailableItemWithNameOrDescription(String description, Integer size, Integer from) {
+        if (size == null || from == null) {
+            return itemRepository.foundAvailableItemWithNameOrDescription(description.toLowerCase());
+        }
+
+        return itemRepository.foundAvailableItemWithNameOrDescription(description.toLowerCase(),
+                        PageRequest.of(from, size, PAGIN_SORT))
+                .getContent();
     }
 
     @Override

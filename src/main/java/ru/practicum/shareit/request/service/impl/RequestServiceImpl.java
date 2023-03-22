@@ -34,7 +34,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto get(Integer id, Integer userId) {
-        if(userId != null){
+        if (userId != null) {
             userStorage.checkUser(userId);
         }
 
@@ -55,11 +55,11 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<RequestDto> getAllWithOffset(Integer size, Integer from, Integer userId) {
-        if(size == null || from == null ){
+        if (size == null || from == null) {
             return getAll(userId);
         }
 
-        if (size <= 0 || from <0) {
+        if (size <= 0 || from < 0) {
             throw new ValidationException("Нельзя передавать отрицательные значения");
         }
 

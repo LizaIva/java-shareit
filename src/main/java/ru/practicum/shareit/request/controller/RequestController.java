@@ -29,7 +29,7 @@ public class RequestController {
 
     @GetMapping("/{requestId}")
     public RequestDto getRequestById(@RequestHeader(USER_ID_HEADER) Integer userId,
-            @PathVariable Integer requestId) {
+                                     @PathVariable Integer requestId) {
         log.info("Получен запрос на вывод запроса с id = {}", requestId);
         return requestService.get(requestId, userId);
     }

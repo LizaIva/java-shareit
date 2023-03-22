@@ -56,7 +56,7 @@ public class ResponseMapper {
     public List<ResponseDto> mapToResponsesDto(List<Response> responses) {
         List<ResponseDto> responsesDto = new ArrayList<>();
 
-        if(responses == null || responses.isEmpty()){
+        if (responses == null || responses.isEmpty()) {
             return responsesDto;
         }
 

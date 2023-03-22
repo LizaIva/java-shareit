@@ -60,15 +60,20 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getOwnersItems(@RequestHeader(USER_ID_HEADER) Integer ownerId) {
+    public List<ItemDto> getOwnersItems(@RequestHeader(USER_ID_HEADER) Integer ownerId,
+                                        @RequestParam(name = "from", required = false) Integer from,
+                                        @RequestParam(name = "size", required = false) Integer size) {
         log.info("Получен запрос все предметов пользователя с id = {}", ownerId);
-        return itemService.getOwnersItems(ownerId);
+        return itemService.getOwnersItems(ownerId, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> foundItemWithText(@RequestParam String text) {
+    public List<ItemDto> foundItemWithText(@RequestParam String text,
+                                           @RequestParam(name = "from", required = false) Integer from,
+                                           @RequestParam(name = "size", required = false) Integer size
+    ) {
         log.info("Запрос предметов по ключевому слову {}", text);
-        return itemService.foundAvailableItemWithNameOrDescription(text);
+        return itemService.foundAvailableItemWithNameOrDescription(text, from, size);
     }
 }
 

@@ -35,8 +35,8 @@ public class RequestMapper {
     private List<ItemDto> mapItemsFromResponse(List<Response> responses, Integer userId) {
         List<ItemDto> itemDtos = new ArrayList<>();
 
-        if(responses == null || responses.isEmpty()){
-            return  itemDtos;
+        if (responses == null || responses.isEmpty()) {
+            return itemDtos;
         }
 
         for (Response response : responses) {
@@ -55,7 +55,7 @@ public class RequestMapper {
                 .build();
     }
 
-    public Request mapToRequest(Integer requestorId, CreateRequestDto createRequestDto){
+    public Request mapToRequest(Integer requestorId, CreateRequestDto createRequestDto) {
         return Request.builder()
                 .description(createRequestDto.getDescription())
                 .created(LocalDateTime.now())

@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.request.model.Request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

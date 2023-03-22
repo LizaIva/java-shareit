@@ -80,20 +80,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getOwnersItems(Integer ownerId) {
+    public List<ItemDto> getOwnersItems(Integer ownerId, Integer size, Integer from) {
         log.info("Запрос предметов пользователя с id = {}", ownerId);
-        List<Item> items = itemStorage.getAllOwnersItems(ownerId);
+
+        List<Item> items = itemStorage.getAllOwnersItems(ownerId, size, from);
         return itemMapper.mapToItemsDto(items, ownerId);
     }
 
     @Override
-    public List<ItemDto> foundAvailableItemWithNameOrDescription(String description) {
+    public List<ItemDto> foundAvailableItemWithNameOrDescription(String description, Integer size, Integer from) {
         if (description == null || description.isEmpty()) {
             return Collections.emptyList();
         }
 
         log.info("Запрос предметов по ключевому слову {}", description);
-        List<Item> items = itemStorage.foundAvailableItemWithNameOrDescription(description);
+        List<Item> items = itemStorage.foundAvailableItemWithNameOrDescription(description, size, from);
         return itemMapper.mapToItemsDto(items, null);
     }
 }

@@ -12,9 +12,9 @@ public interface ItemStorage {
 
     Item getItemById(Integer id);
 
-    List<Item> getAllOwnersItems(Integer ownerId);
+    List<Item> getAllOwnersItems(Integer ownerId, Integer size, Integer from);
 
-    List<Item> foundAvailableItemWithNameOrDescription(String description);
+    List<Item> foundAvailableItemWithNameOrDescription(String description, Integer size, Integer from);
 
     List<Item> getAll();
 

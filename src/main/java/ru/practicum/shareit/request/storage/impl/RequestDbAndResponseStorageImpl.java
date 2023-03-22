@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request.storage.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.criterion.Order;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import ru.practicum.shareit.request.repository.ResponseRepository;
 import ru.practicum.shareit.request.storage.RequestAndResponseStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @RequiredArgsConstructor

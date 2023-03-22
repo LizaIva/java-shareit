@@ -80,16 +80,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getOwnersAllBookingsViaStatus(int ownerId, State state) {
+    public List<BookingDto> getOwnersAllBookingsViaStatus(int ownerId, State state, Integer size, Integer from) {
         userStorage.checkUser(ownerId);
+
+
         log.info("Запрос бронирований владельца с id = {}", ownerId);
 
-        List<Booking> ownersBookings = bookingStorage.getOwnersAllBookings(ownerId);
+
+        List<Booking> ownersBookings = bookingStorage.getOwnersAllBookings(ownerId, size, from);
         return bookingMapper.mapToBookingsDto(filterBookingsByState(state, ownersBookings));
     }
 
     private List<Booking> filterBookingsByState(State state, List<Booking> bookings) {
-        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
+        //   bookings.sort(Comparator.comparing(Booking::getStart).reversed());
 
         List<Booking> filteredBookings = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
@@ -151,10 +154,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookersAllBooking(int bookerId, State state) {
+    public List<BookingDto> getBookersAllBooking(int bookerId, State state, Integer size, Integer from) {
         userStorage.checkUser(bookerId);
+
         log.info("Запрос бронирований пользователя с id = {}", bookerId);
-        List<Booking> bookersBookings = bookingStorage.getBookersAllBooking(bookerId);
+        List<Booking> bookersBookings = bookingStorage.getBookersAllBooking(bookerId, size, from);
 
         return bookingMapper.mapToBookingsDto(filterBookingsByState(state, bookersBookings));
     }
