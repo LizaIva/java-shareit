@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.utils.ItemMapper;
+import ru.practicum.shareit.request.model.Response;
+import ru.practicum.shareit.request.storage.RequestAndResponseStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collections;
@@ -22,6 +24,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final ItemMapper itemMapper;
     private final UserStorage userStorage;
+    private final RequestAndResponseStorage requestAndResponseStorage;
 
     @Override
     public ItemDto put(Integer ownerId, ItemDto itemDto) {
@@ -29,6 +32,15 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemMapper.mapToItem(ownerId, itemDto);
         log.info("Создание предмета");
         Item savedItem = itemStorage.put(ownerId, item);
+
+        if (itemDto.getRequestId() != null) {
+            Response response = Response.builder()
+                    .item(savedItem)
+                    .owner(userStorage.getUserById(ownerId))
+                    .request(requestAndResponseStorage.getRequestById(itemDto.getRequestId()))
+                    .build();
+            requestAndResponseStorage.put(response);
+        }
         return itemMapper.mapToItemDto(savedItem, null);
     }
 

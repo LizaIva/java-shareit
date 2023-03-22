@@ -5,6 +5,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.model.Response;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,4 +39,10 @@ public class User {
 
     @OneToMany(mappedBy = "item")
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "requestor")
+    private List<Request> requests;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Response> responses;
 }

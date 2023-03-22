@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.SortComparator;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.utils.BookingMapper;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.model.Response;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -35,10 +37,17 @@ public class Item {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private Request request;
+
     @OneToMany(mappedBy = "bookedItem", fetch = FetchType.LAZY)
     @SortComparator(BookingMapper.BookingsByStartComparator.class)
     private List<Booking> bookings;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    @OneToOne(mappedBy = "item", fetch = FetchType.LAZY)
+    private Response response;
 }

@@ -10,6 +10,9 @@ import ru.practicum.shareit.booking.utils.BookingMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdatedItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.storage.RequestAndResponseStorage;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
@@ -24,6 +27,8 @@ public class ItemMapper {
 
     private final CommentMapper commentMapper;
     private final UserStorage userStorage;
+    private final RequestAndResponseStorage requestAndResponseStorage;
+    private final ItemStorage itemStorage;
 
     @Autowired
     @Lazy
@@ -37,6 +42,10 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .comments(commentMapper.mapToCommentDto(item.getComments()))
                 .build();
+
+        if (item.getRequest() != null) {
+            itemDto.setRequestId(item.getRequest().getRequestId());
+        }
 
         if (item.getOwner().getId().equals(userId)) {
             List<Booking> bookings = item.getBookings();
@@ -77,12 +86,16 @@ public class ItemMapper {
     }
 
     public Item mapToItem(Integer ownerId, ItemDto itemDto) {
+        Request request = requestAndResponseStorage.getRequestById(itemDto.getRequestId());
+        User owner = userStorage.getUserById(ownerId);
+
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
-                .owner(userStorage.getUserById(ownerId))
+                .owner(owner)
                 .available(itemDto.getAvailable())
+                .request(request)
                 .build();
     }
 

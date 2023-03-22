@@ -7,6 +7,7 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.sql.DataSource;
 import javax.validation.Valid;
 import java.util.Collection;
 
@@ -17,6 +18,7 @@ import java.util.Collection;
 public class UserController {
 
     private final UserService userService;
+    private final DataSource dataSource;
 
     @PostMapping
     public UserDto create(@RequestBody @Valid UserDto userDto) {
