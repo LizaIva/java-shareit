@@ -18,7 +18,6 @@ import java.util.Collection;
 public class UserController {
 
     private final UserService userService;
-    private final DataSource dataSource;
 
     @PostMapping
     public UserDto create(@RequestBody @Valid UserDto userDto) {

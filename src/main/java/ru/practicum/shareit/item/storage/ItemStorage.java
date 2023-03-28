@@ -16,11 +16,7 @@ public interface ItemStorage {
 
     List<Item> foundAvailableItemWithNameOrDescription(String description, Integer size, Integer from);
 
-    List<Item> getAll();
-
     Item updateItem(Integer ownerId, Item item);
-
-    Item deleteById(Integer id);
 
     void checkItem(int id);
 

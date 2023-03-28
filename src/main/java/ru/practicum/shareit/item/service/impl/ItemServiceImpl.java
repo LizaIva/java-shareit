@@ -74,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Integer itemId, Integer userId) {
+        userStorage.checkUser(userId);
         log.info("Запрос предмета с id = {}", itemId);
         Item item = itemStorage.getItemById(itemId);
         return itemMapper.mapToItemDto(item, userId);

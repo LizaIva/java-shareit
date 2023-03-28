@@ -58,23 +58,11 @@ public class ItemDbStorageImpl implements ItemStorage {
     }
 
     @Override
-    public List<Item> getAll() {
-        return itemRepository.findAll();
-    }
-
-    @Override
     public Item updateItem(Integer ownerId, Item item) {
         checkItemOwner(ownerId, item.getId());
         return itemRepository.saveAndFlush(item);
     }
 
-
-    @Override
-    public Item deleteById(Integer id) {
-        Item deletedItem = getItemById(id);
-        itemRepository.deleteById(id);
-        return deletedItem;
-    }
 
     @Override
     public void checkItem(int id) {

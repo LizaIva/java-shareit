@@ -28,7 +28,6 @@ public class ItemMapper {
     private final CommentMapper commentMapper;
     private final UserStorage userStorage;
     private final RequestAndResponseStorage requestAndResponseStorage;
-    private final ItemStorage itemStorage;
 
     @Autowired
     @Lazy
@@ -47,6 +46,10 @@ public class ItemMapper {
             itemDto.setRequestId(item.getRequest().getRequestId());
         }
 
+        // 1) один из букингов rejected
+        // 2) сделать 1 букинг у которого start now -1 день -- это и будет last booking
+        // 3) сделать 1 букинг у которого start now +2 день -- этот букинг должен будет замениться следующим (4м)
+        // 4) сделать 1 букинг у которого start now +1 день -- это и будет next booking booking
         if (item.getOwner().getId().equals(userId)) {
             List<Booking> bookings = item.getBookings();
 
