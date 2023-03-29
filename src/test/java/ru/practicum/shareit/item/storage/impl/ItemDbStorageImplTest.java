@@ -1,13 +1,12 @@
 package ru.practicum.shareit.item.storage.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exception.CheckOwnerException;
 import ru.practicum.shareit.exception.UnknownDataException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -23,22 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemDbStorageImplTest {
 
     private final ItemService itemService;
-    private final JdbcTemplate jdbcTemplate;
     private final UserService userService;
-
-    @BeforeEach
-    void setUp() {
-        jdbcTemplate.update("DELETE FROM users");
-        jdbcTemplate.update("DELETE FROM items");
-        jdbcTemplate.update("DELETE FROM bookings");
-        jdbcTemplate.update("DELETE FROM requests");
-        jdbcTemplate.update("DELETE FROM responses");
-    }
 
     @Test
     void putAndPutWithUnknownUserAndWithEmptyNameAndDescriptionAndAvailable() {
@@ -190,9 +180,6 @@ class ItemDbStorageImplTest {
         List<ItemDto> ownerItems = List.of(ownerItem1, ownerItem2, ownerItem3);
 
         assertEquals(ownerItems, actualItems);
-        assertEquals(ownerItems.get(0), actualItems.get(0));
-        assertEquals(ownerItems.get(1), actualItems.get(1));
-        assertEquals(ownerItems.get(2), actualItems.get(2));
 
         List<ItemDto> actualItems1 = itemService.getOwnersItems(userDto1.getId(), 5, null);
         List<ItemDto> ownerItems1 = List.of(differentItem);
@@ -239,7 +226,7 @@ class ItemDbStorageImplTest {
                 .build();
         itemService.put(userDto.getId(), itemDto3);
 
-        ItemDto itemDto4 =ItemDto.builder()
+        ItemDto itemDto4 = ItemDto.builder()
                 .id(4)
                 .name("ДРель")
                 .description("очень мощная")
@@ -300,19 +287,28 @@ class ItemDbStorageImplTest {
 
         assertThrows(CheckOwnerException.class, () -> itemService.update(userDto1.getId(), ownerItem1.getId(),
                 UpdatedItemDto.builder()
-                .available(true)
-                .build()));
-    }
-
-    @Test
-    void deleteById() {
+                        .available(true)
+                        .build()));
     }
 
     @Test
     void checkItem() {
-    }
+        UserDto userDto = UserDto.builder()
+                .id(1)
+                .name("Liza")
+                .email("iva-iva@mail.ru")
+                .build();
 
-    @Test
-    void checkItemOwner() {
+        userService.put(userDto);
+
+        ItemDto ownerItem1 = ItemDto.builder()
+                .id(1)
+                .name("Молоток")
+                .description("Для гвоздей")
+                .available(true)
+                .comments(Collections.emptyList())
+                .build();
+
+        assertThrows(UnknownDataException.class, () -> itemService.getItemById(99, userDto.getId()));
     }
 }

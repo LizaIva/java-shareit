@@ -30,11 +30,11 @@ public class Booking {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private Item bookedItem;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "booker_id")
     private User booker;
 }

@@ -3,25 +3,24 @@ package ru.practicum.shareit.item.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.CreateBookingRequestDto;
-import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdatedItemDto;
 import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,10 +40,6 @@ class ItemControllerIT {
     private ItemService itemService;
     @MockBean
     private CommentService commentService;
-
-    @MockBean
-    private BookingService bookingService;
-
 
     @SneakyThrows
     @Test
@@ -117,6 +112,43 @@ class ItemControllerIT {
 
     @SneakyThrows
     @Test
+    void createComment() {
+        int itemId = 1;
+        int userId = 1;
+        CreateCommentDto commentDto = CreateCommentDto.builder()
+                .text("отличные коньки")
+                .build();
+
+        CommentDto createdCommentDto = CommentDto.builder()
+                .id(1)
+                .text("отличные коньки")
+                .build();
+
+        when(commentService.put(itemId, userId, commentDto)).thenReturn(createdCommentDto);
+
+        String result = mockMvc.perform(post("/items/{itemId}/comment", itemId)
+                        .header(USER_ID_HEADER, userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentDto))
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertNotEquals(objectMapper.writeValueAsString(commentDto), result);
+
+
+        commentDto.setText("");
+        mockMvc.perform(post("/items/{itemId}/comment", itemId)
+                        .header(USER_ID_HEADER, userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentDto))
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @SneakyThrows
+    @Test
     void updateItemNotValid() {
         int itemId = 1;
         int ownerId = 1;
@@ -143,69 +175,203 @@ class ItemControllerIT {
                 .getContentAsString(StandardCharsets.UTF_8);
     }
 
-    //проверка last next booking должна быть в тесте маппера itemMapper, который должен быть unit тестом, тк там нет никаких поисков в бд
+
     @SneakyThrows
     @Test
-    void getItemById() {
-        int itemId = 1;
-        int userId = 1;
-        int bookerId = 2;
-
-        // 1) один из букингов rejected
-        // 2) сделать 1 букинг у которого start now -1 день -- это и будет last booking
-        // 3) сделать 1 букинг у которого start now +2 день -- этот букинг должен будет замениться следующим (4м)
-        // 4) сделать 1 букинг у которого start now +1 день -- это и будет next booking booking
-        CreateBookingRequestDto booking0 = CreateBookingRequestDto.builder()
-                .itemId(itemId)
-                .start(LocalDateTime.of(2023,9,10, 8, 22))
-                .end(LocalDateTime.of(2023, 10, 9, 12, 5))
+    void getItemByIdAndGetUnknownItemAndGetFromUnknownUser() {
+        UserDto userDto = UserDto.builder()
+                .id(1)
+                .name("Liza")
+                .email("ivaiva@mail.ru")
                 .build();
 
-        bookingService.put(booking0, bookerId);
-
-        BookingDto bookingDto1 = BookingDto.builder()
-                .itemId(itemId)
-                .bookerId(bookerId)
-                .item(itemService.getItemById(itemId, userId))
-                .start(LocalDateTime.of(2023,11,10, 8, 22))
-                .end(LocalDateTime.of(2023, 12, 9, 12, 5))
+        ItemDto itemDto1 = ItemDto.builder()
+                .id(1)
+                .name("Молоток")
+                .description("Для гвоздей")
+                .available(true)
                 .build();
 
-
-        BookingDto bookingDto2 = BookingDto.builder()
-                .itemId(itemId)
-                .bookerId(bookerId)
-                .item(itemService.getItemById(itemId, userId))
-                .start(LocalDateTime.of(2023,12,13, 8, 22))
-                .end(LocalDateTime.of(2023, 12, 22, 12, 5))
+        ItemDto itemDto2 = ItemDto.builder()
+                .id(2)
+                .name("Отвертка")
+                .description("Строительная")
+                .available(true)
                 .build();
 
+        when(itemService.put(userDto.getId(), itemDto1)).thenReturn(itemDto1);
+        when(itemService.put(userDto.getId(), itemDto2)).thenReturn(itemDto2);
 
-        //создать несколько букингов на айтем созданный в createItem
-        //создать их таких, чтобы в методе зайдествовать логику работы метода ru.practicum.shareit.item.utils.ItemMapper.mapToItemDto
-        // создаем их для того, чтобы проверить, что у нас правильно засунулись букинги в lastBooking and nextBooking
+        String result = mockMvc.perform(get("/items/{itemId}", itemDto1.getId())
+                        .header(USER_ID_HEADER, userDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemDto1))
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertNotEquals(objectMapper.writeValueAsString(itemDto1), result);
 
-
-
-        MockHttpServletRequestBuilder webTestRequest = get("/items/{itemId}", itemId)
-                .header(USER_ID_HEADER, userId);
-
-        mockMvc.perform(webTestRequest).andExpect(status().isOk());
-
-        Mockito.verify(itemService).getItemById(itemId, userId);
-//        Mockito.verify(itemService, )
     }
 
     @Test
+    @SneakyThrows
     void update() {
+        ItemDto itemDto1 = ItemDto.builder()
+                .id(1)
+                .name("Молоток")
+                .description("Для гвоздей")
+                .available(true)
+                .build();
+
+        when(itemService.put(1, itemDto1)).thenReturn(itemDto1);
+
+        UpdatedItemDto updatedItemDto = UpdatedItemDto.builder()
+                .available(false)
+                .build();
+
+
+        String resultUpdatedItem = mockMvc.perform(patch("/items/{itemId}", itemDto1.getId())
+                        .header(USER_ID_HEADER, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedItemDto))
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        itemDto1.setAvailable(false);
+        assertNotEquals(objectMapper.writeValueAsString(itemDto1), resultUpdatedItem);
     }
 
 
+    @SneakyThrows
     @Test
     void getOwnersItems() {
+        int ownerId = 1;
+        ItemDto itemDto = ItemDto.builder()
+                .id(1)
+                .name("Молоток")
+                .description("Для гвоздей")
+                .available(true)
+                .build();
+
+        when(itemService.put(1, itemDto)).thenReturn(itemDto);
+
+        ItemDto itemDto2 = ItemDto.builder()
+                .id(2)
+                .name("Отвертка")
+                .description("Для стройки")
+                .available(true)
+                .build();
+
+        when(itemService.put(1, itemDto2)).thenReturn(itemDto2);
+
+        int ownerId2 = 2;
+        ItemDto itemDto3 = ItemDto.builder()
+                .id(3)
+                .name("Коньки")
+                .description("Детские")
+                .available(true)
+                .build();
+
+        when(itemService.put(2, itemDto3)).thenReturn(itemDto3);
+
+        List<ItemDto> itemsForUser1 = List.of(itemDto, itemDto2);
+
+        String result = mockMvc.perform(get("/items", 5, null)
+                        .header(USER_ID_HEADER, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemsForUser1))
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertNotEquals(objectMapper.writeValueAsString(itemsForUser1), result);
+
+
+        List<ItemDto> itemsForUser2 = List.of(itemDto3);
+        String result2 = mockMvc.perform(get("/items", null, null)
+                        .header(USER_ID_HEADER, 2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemsForUser2))
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertNotEquals(objectMapper.writeValueAsString(itemsForUser2), result2);
+
+        List<ItemDto> itemsForUser1WithPagination = List.of(itemDto);
+
+        String result3 = mockMvc.perform(get("/items", 1, null)
+                        .header(USER_ID_HEADER, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemsForUser1WithPagination))
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertNotEquals(objectMapper.writeValueAsString(itemsForUser1WithPagination), result3);
     }
 
+    @SneakyThrows
     @Test
     void foundItemWithText() {
+        int ownerId = 1;
+        int ownerId2 = 2;
+
+        ItemDto itemDto = ItemDto.builder()
+                .id(1)
+                .name("Молоток")
+                .description("Для гвоздей")
+                .available(false)
+                .build();
+
+        when(itemService.put(1, itemDto)).thenReturn(itemDto);
+
+        ItemDto itemDto2 = ItemDto.builder()
+                .id(2)
+                .name("Отвертка")
+                .description("Как МОЛОток")
+                .available(true)
+                .build();
+
+        when(itemService.put(2, itemDto2)).thenReturn(itemDto2);
+
+        ItemDto itemDto3 = ItemDto.builder()
+                .id(3)
+                .name("Коньки")
+                .description("Детские")
+                .available(true)
+                .build();
+        when(itemService.put(1, itemDto3)).thenReturn(itemDto3);
+
+        ItemDto itemDto4 = ItemDto.builder()
+                .id(4)
+                .name("МОЛОТОК")
+                .description("обычный")
+                .available(true)
+                .build();
+        when(itemService.put(2, itemDto4)).thenReturn(itemDto4);
+
+        List<ItemDto> itemsDto = List.of(itemDto2, itemDto4);
+
+        when(itemService.foundAvailableItemWithNameOrDescription("МОЛОТОк", null, null)).thenReturn(itemsDto);
+
+        String result = mockMvc.perform(get("/items/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemsDto))
+                        .param("text", "МОЛОТОк")
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        assertEquals(objectMapper.writeValueAsString(itemsDto), result);
     }
 }

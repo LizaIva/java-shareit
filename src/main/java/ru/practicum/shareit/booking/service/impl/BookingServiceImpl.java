@@ -92,7 +92,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private List<Booking> filterBookingsByState(State state, List<Booking> bookings) {
-        //   bookings.sort(Comparator.comparing(Booking::getStart).reversed());
 
         List<Booking> filteredBookings = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
@@ -164,14 +163,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getItemsAllBooking(int itemId) {
-        itemStorage.checkItem(itemId);
-        log.info("Запрос бронирований предмета с id = {}", itemId);
-        List<Booking> itemsBookings = bookingStorage.getItemsAllBooking(itemId);
-        return bookingMapper.mapToBookingsDto(itemsBookings);
-    }
-
-    @Override
     public void checkTimeForBooking(LocalDateTime start, LocalDateTime end, Integer itemId) {
         itemStorage.checkItem(itemId);
 
@@ -183,18 +174,6 @@ public class BookingServiceImpl implements BookingService {
         if (start.equals(end)) {
             log.info("Попытка создать букинг с одинаковым временем старта и окончания");
             throw new ValidationException("Время старта и окончания букинга не может быть одинаковым");
-        }
-
-        List<Booking> itemBookings = bookingStorage.getItemsAllBooking(itemId);
-        if (itemBookings == null || itemBookings.isEmpty()) {
-            return;
-        }
-
-        for (Booking booking : itemBookings) {
-            if (!end.isBefore(booking.getStart()) || !start.isAfter(booking.getEnd())) {
-                log.info("Попытка создать букинг на занятой временной интервал");
-                throw new ValidationException("Время букинга данного предмета уже занято");
-            }
         }
     }
 }

@@ -12,7 +12,6 @@ import ru.practicum.shareit.exception.UnknownDataException;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Arrays;
 import java.util.List;

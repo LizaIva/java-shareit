@@ -106,7 +106,7 @@ class UserControllerIT {
 
         String resultUpdatedUser = mockMvc.perform(patch("/users/{userId}", userDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto))
+                        .content(objectMapper.writeValueAsString(updateUserDto))
                 )
                 .andExpect(status().isOk())
                 .andReturn()
@@ -118,7 +118,7 @@ class UserControllerIT {
 
         String resultGetUpdatedUser = mockMvc.perform(get("/users/{userId}", userDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto))
+                        .content(objectMapper.writeValueAsString(updateUserDto))
                 )
                 .andExpect(status().isOk())
                 .andReturn()
@@ -130,7 +130,7 @@ class UserControllerIT {
         updateUserDto.setEmail("kjlhlh_mail.ru");
         mockMvc.perform(patch("/users{userId}", userDto.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto))
+                        .content(objectMapper.writeValueAsString(updateUserDto))
                 )
                 .andExpect(status().isNotFound());
     }
@@ -179,7 +179,7 @@ class UserControllerIT {
                 .email("abc@mail.ru")
                 .build();
 
-        List<UserDto> usersDto= List.of(userDto, userDto2);
+        List<UserDto> usersDto = List.of(userDto, userDto2);
 
         when(userService.getAll()).thenReturn(usersDto);
 
@@ -211,7 +211,7 @@ class UserControllerIT {
                 .email("abc@mail.ru")
                 .build();
 
-        List<UserDto> usersDto= List.of(userDto, userDto2);
+        List<UserDto> usersDto = List.of(userDto, userDto2);
 
         when(userService.getAll()).thenReturn(usersDto);
 
@@ -240,7 +240,7 @@ class UserControllerIT {
         assertEquals(objectMapper.writeValueAsString(userDto), deletedUser);
 
 
-        List<UserDto> usersDtoAfterDelete= List.of(userDto2);
+        List<UserDto> usersDtoAfterDelete = List.of(userDto2);
         when(userService.getAll()).thenReturn(usersDtoAfterDelete);
 
 

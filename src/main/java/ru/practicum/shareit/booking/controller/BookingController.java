@@ -65,11 +65,5 @@ public class BookingController {
         log.info("Получен запрос всех букингов пользователя с  id = {}", bookerId);
         return bookingService.getBookersAllBooking(bookerId, fromValue(stringState), size, from);
     }
-
-    @GetMapping("/items/{itemId}")
-    public List<BookingDto> getItemsAllBooking(@PathVariable Integer itemId) {
-        log.info("Получен запрос всех букингов предмета с  id = {}", itemId);
-        return bookingService.getItemsAllBooking(itemId);
-    }
 }
 

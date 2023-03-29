@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.utils;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -8,12 +7,9 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.utils.BookingMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.UpdatedItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.request.storage.RequestAndResponseStorage;
-import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
@@ -22,16 +18,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class ItemMapper {
 
     private final CommentMapper commentMapper;
     private final UserStorage userStorage;
     private final RequestAndResponseStorage requestAndResponseStorage;
+    private final BookingMapper bookingMapper;
 
-    @Autowired
-    @Lazy
-    private BookingMapper bookingMapper;
+    public ItemMapper(CommentMapper commentMapper,
+                      UserStorage userStorage,
+                      RequestAndResponseStorage requestAndResponseStorage,
+                      @Autowired @Lazy BookingMapper bookingMapper) {
+
+        this.commentMapper = commentMapper;
+        this.userStorage = userStorage;
+        this.requestAndResponseStorage = requestAndResponseStorage;
+        this.bookingMapper = bookingMapper;
+    }
 
     public ItemDto mapToItemDto(Item item, Integer userId) {
         ItemDto itemDto = ItemDto.builder()
@@ -46,10 +49,6 @@ public class ItemMapper {
             itemDto.setRequestId(item.getRequest().getRequestId());
         }
 
-        // 1) один из букингов rejected
-        // 2) сделать 1 букинг у которого start now -1 день -- это и будет last booking
-        // 3) сделать 1 букинг у которого start now +2 день -- этот букинг должен будет замениться следующим (4м)
-        // 4) сделать 1 букинг у которого start now +1 день -- это и будет next booking booking
         if (item.getOwner().getId().equals(userId)) {
             List<Booking> bookings = item.getBookings();
 
@@ -108,24 +107,5 @@ public class ItemMapper {
             itemsDto.add(mapToItemDto(item, userId));
         }
         return itemsDto;
-    }
-
-
-    public User mapToUser(Integer id, UpdateUserDto dto) {
-        return User.builder()
-                .id(id)
-                .name(dto.getName())
-                .email(dto.getEmail())
-                .build();
-    }
-
-    public Item mapToItem(Integer ownerId, Integer itemId, UpdatedItemDto dto) {
-        return Item.builder()
-                .id(itemId)
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .owner(userStorage.getUserById(ownerId))
-                .available(dto.getAvailable())
-                .build();
     }
 }

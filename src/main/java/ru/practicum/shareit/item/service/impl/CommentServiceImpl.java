@@ -26,12 +26,4 @@ public class CommentServiceImpl implements CommentService {
         Comment savedComment = commentStorage.put(comment);
         return commentMapper.mapToCommentDto(savedComment);
     }
-
-    @Override
-    public CommentDto getFeedbackById(Integer feedbackId) {
-        log.info("Запрос отзыва с id = {}", feedbackId);
-        commentStorage.checkComment(feedbackId);
-
-        return commentMapper.mapToCommentDto(commentStorage.get(feedbackId));
-    }
 }

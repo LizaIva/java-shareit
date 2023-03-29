@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.sql.DataSource;
 import javax.validation.Valid;
 import java.util.Collection;
 

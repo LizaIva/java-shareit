@@ -87,11 +87,6 @@ public class BookingDbStorageImpl implements BookingStorage {
     }
 
     @Override
-    public List<Booking> getItemsAllBooking(int itemId) {
-        return null;
-    }
-
-    @Override
     public void checkBooking(int id) {
         if (!bookingRepository.existsById(id)) {
             throw new UnknownDataException((String.format(NOT_FOUND_BOOKING_MSG, id)));

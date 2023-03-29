@@ -20,8 +20,6 @@ public interface BookingStorage {
 
     List<Booking> getBookersAllBooking(int bookerId, Integer size, Integer from);
 
-    List<Booking> getItemsAllBooking(int itemId);
-
     void checkBooking(int id);
 
     void checkUserItemOwnerByBookingId(int bookingId, int userId);
