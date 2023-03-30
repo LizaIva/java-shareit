@@ -25,7 +25,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer>,
             "   and (lower(i.name) like concat('%', :textValue, '%') or lower(i.description) like concat('%', :textValue, '%'))")
     Page<Item> foundAvailableItemWithNameOrDescription(@Param("textValue") String textValue, Pageable pageable);
 
-    @Query("from items i " +
+    @Query("select i from items i " +
             "where i.available is true " +
             "   and (lower(i.name) like concat('%', :textValue, '%') or lower(i.description) like concat('%', :textValue, '%'))")
     List<Item> foundAvailableItemWithNameOrDescription(@Param("textValue") String textValue);

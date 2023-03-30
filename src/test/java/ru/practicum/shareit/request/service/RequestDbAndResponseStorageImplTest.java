@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exception.UnknownDataException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.CreateRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -25,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class RequestDbAndResponseStorageImplTest {
     private final RequestService requestService;
+    private final ItemService itemService;
     private final UserService userService;
 
     @Test
@@ -80,6 +83,17 @@ class RequestDbAndResponseStorageImplTest {
 
 
         RequestDto actualRequest2 = requestService.put(createRequestDto2, userDto.getId());
+
+        ItemDto itemDto = ItemDto.builder()
+                .id(1)
+                .name("дрель")
+                .description("очень мощная")
+                .available(true)
+                .comments(Collections.emptyList())
+                .requestId(actualRequest1.getId())
+                .build();
+
+        itemService.put(userDto.getId(), itemDto);
 
         RequestDto expectedRequestDto2 = RequestDto.builder()
                 .id(2)

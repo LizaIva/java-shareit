@@ -251,6 +251,12 @@ class ItemDbStorageImplTest {
         assertEquals(expectedItems.get(0), itemsDto.get(0));
         assertEquals(expectedItems.get(1), itemsDto.get(1));
         assertEquals(expectedItems.get(2), itemsDto.get(2));
+
+        List<ItemDto> expectedItems2 = List.of(itemDto1, itemDto4);
+
+        List<ItemDto> actualSearch = itemService.foundAvailableItemWithNameOrDescription("ДРелЬ", 2, 0);
+        assertEquals(2, actualSearch.size());
+        assertEquals(expectedItems2, actualSearch);
     }
 
     @Test

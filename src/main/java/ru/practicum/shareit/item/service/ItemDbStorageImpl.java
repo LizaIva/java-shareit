@@ -21,7 +21,7 @@ public class ItemDbStorageImpl implements ItemStorage {
     private final ItemRepository itemRepository;
     private final UserStorage userStorage;
 
-    private static final Sort PAGIN_SORT = Sort.by(List.of(Sort.Order.asc("item_id")));
+    private static final Sort PAGIN_SORT = Sort.by(List.of(Sort.Order.asc("id")));
 
     @Override
     public Item put(Integer ownerId, Item item) {
