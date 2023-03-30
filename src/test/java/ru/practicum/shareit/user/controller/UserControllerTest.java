@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UserController.class)
-class UserControllerIT {
+class UserControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;

@@ -261,13 +261,11 @@ class ItemDbStorageImplTest {
 
     @Test
     void updateItemAndUpdatedFromNotOwner() {
-        UserDto userDto = UserDto.builder()
-                .id(1)
+        UserDto userDto = userService.put(UserDto.builder()
                 .name("Liza")
                 .email("iva-iva@mail.ru")
-                .build();
-
-        userService.put(userDto);
+                .build()
+        );
 
         ItemDto ownerItem1 = ItemDto.builder()
                 .id(1)
@@ -285,10 +283,10 @@ class ItemDbStorageImplTest {
         assertEquals(false, updatedItemDto.getAvailable());
 
         UserDto userDto1 = userService.put(UserDto.builder()
-                .id(2)
                 .name("Masha")
                 .email("abc@mail.ru")
-                .build());
+                .build()
+        );
 
         assertThrows(CheckOwnerException.class, () -> itemService.update(userDto1.getId(), ownerItem1.getId(),
                 UpdatedItemDto.builder()

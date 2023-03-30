@@ -30,7 +30,7 @@ import static ru.practicum.shareit.header.HeaderConst.USER_ID_HEADER;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ItemController.class)
-class ItemControllerIT {
+class ItemControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
