@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.storage.impl;
+package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

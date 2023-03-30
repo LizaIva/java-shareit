@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.storage.impl;
+package ru.practicum.shareit.user.storage;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;

@@ -10,7 +10,6 @@ import ru.practicum.shareit.request.model.Response;
 import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.request.repository.ResponseRepository;
 import ru.practicum.shareit.request.storage.RequestAndResponseStorage;
-import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
 
@@ -22,7 +21,6 @@ public class RequestDbAndResponseStorageImpl implements RequestAndResponseStorag
 
     private final RequestRepository requestRepository;
     private final ResponseRepository responseRepository;
-    private final UserStorage userStorage;
 
     @Override
     public Request put(Request request) {

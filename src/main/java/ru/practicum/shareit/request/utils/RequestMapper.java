@@ -22,7 +22,7 @@ public class RequestMapper {
     private final ResponseMapper responseMapper;
     private final ItemMapper itemMapper;
 
-    public RequestDto mapToRequestsDto(Request request, int userId) {
+    public RequestDto mapToRequestsDto(Request request, Integer userId) {
         return RequestDto.builder()
                 .id(request.getRequestId())
                 .description(request.getDescription())
@@ -44,15 +44,6 @@ public class RequestMapper {
         }
 
         return itemDtos;
-    }
-
-    public Request mapToRequest(RequestDto requestDto) {
-        return Request.builder()
-                .requestId(requestDto.getId())
-                .description(requestDto.getDescription())
-                //возможно понадобится встаивть реквестора
-                .created(requestDto.getCreated())
-                .build();
     }
 
     public Request mapToRequest(Integer requestorId, CreateRequestDto createRequestDto) {

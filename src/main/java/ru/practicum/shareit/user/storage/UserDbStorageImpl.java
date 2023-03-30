@@ -1,11 +1,10 @@
-package ru.practicum.shareit.user.storage.impl;
+package ru.practicum.shareit.user.storage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.UnknownDataException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
 

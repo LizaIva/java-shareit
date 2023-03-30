@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request.model;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -29,6 +31,7 @@ public class Request {
     @Column(name = "created")
     private LocalDateTime created;
 
-    @OneToMany(mappedBy = "request")
+    @OneToMany(mappedBy = "request", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Response> responses;
 }

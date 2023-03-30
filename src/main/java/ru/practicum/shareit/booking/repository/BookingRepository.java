@@ -49,28 +49,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer>,
     )
     List<Booking> getBookingsByOwnerId(@Param("ownerId") int ownerId);
 
-
-    @Query(
-            value = "select * " +
-                    "from bookings b " +
-                    "where b.item_id = :itemId AND b.status_id = 1 " +
-                    "order by b.start_date desc " +
-                    "limit 1",
-            nativeQuery = true
-    )
-    Booking findByLastTimeBooking(@Param("itemId") int itemId);
-
-    @Query(
-            value = "select * " +
-                    "from bookings b " +
-                    "where b.item_id = :itemId AND b.status_id = 1 " +
-                    "order by b.start_date " +
-                    "limit 1 offset 1",
-            nativeQuery = true
-    )
-    Booking findNextTimeBooking(@Param("itemId") int itemId);
-
-
     @Query("select count(*) > 0 " +
             "   from bookings b " +
             "   where b.bookedItem.id = :itemId and b.booker.id = :userId and (b.status = 3 or current_timestamp > b.end)"

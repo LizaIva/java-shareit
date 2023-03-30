@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.service.impl;
+package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.dto.CreateBookingRequestDto;
 import ru.practicum.shareit.booking.dto.State;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.utils.BookingMapper;
 import ru.practicum.shareit.exception.UnknownDataException;
@@ -21,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-
-import static ru.practicum.shareit.booking.dto.State.FUTURE;
-import static ru.practicum.shareit.booking.dto.State.PAST;
 
 @Slf4j
 @Service
@@ -106,6 +102,7 @@ public class BookingServiceImpl implements BookingService {
                     }
                 }
 
+                filteredBookings.sort(Comparator.comparing(Booking::getId));
                 break;
             case PAST:
                 for (Booking booking : bookings) {
@@ -114,6 +111,7 @@ public class BookingServiceImpl implements BookingService {
                     }
                 }
 
+                filteredBookings.sort(Comparator.comparing(Booking::getStart).reversed());
                 break;
             case FUTURE:
                 for (Booking booking : bookings) {
@@ -122,6 +120,7 @@ public class BookingServiceImpl implements BookingService {
                     }
                 }
 
+                filteredBookings.sort(Comparator.comparing(Booking::getStart).reversed());
                 break;
             case WAITING:
                 for (Booking booking : bookings) {
@@ -130,6 +129,7 @@ public class BookingServiceImpl implements BookingService {
                     }
                 }
 
+                filteredBookings.sort(Comparator.comparing(Booking::getStart));
                 break;
             case REJECTED:
                 for (Booking booking : bookings) {
@@ -138,15 +138,10 @@ public class BookingServiceImpl implements BookingService {
                     }
                 }
 
+                filteredBookings.sort(Comparator.comparing(Booking::getStart));
                 break;
             default:
                 throw new UnknownDataException(String.format("Передан неизвестный стэйт %s", state));
-        }
-
-        if (PAST.equals(state) || FUTURE.equals(state)) {
-            filteredBookings.sort(Comparator.comparing(Booking::getStart).reversed());
-        } else {
-            filteredBookings.sort(Comparator.comparing(Booking::getStart));
         }
 
         return filteredBookings;

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.service.impl;
+package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,6 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.request.dto.CreateRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.model.Request;
-import ru.practicum.shareit.request.service.RequestService;
 import ru.practicum.shareit.request.storage.RequestAndResponseStorage;
 import ru.practicum.shareit.request.utils.RequestMapper;
 import ru.practicum.shareit.user.storage.UserStorage;

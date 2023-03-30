@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.service.impl;
+package ru.practicum.shareit.user.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -135,7 +135,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void GetByIdUnknownUser() {
+    void getByIdUnknownUser() {
         User user = new User();
         user.setId(1);
         user.setName("Liza");
