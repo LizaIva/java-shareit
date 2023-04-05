@@ -14,11 +14,9 @@ public interface BookingService {
 
     BookingDto getBookingById(int bookingId, int userId);
 
-    List<BookingDto> getOwnersAllBookingsViaStatus(int ownerId, State state);
+    List<BookingDto> getOwnersAllBookingsViaStatus(int ownerId, State state, Integer size, Integer from);
 
-    List<BookingDto> getBookersAllBooking(int ownerId, State state);
-
-    List<BookingDto> getItemsAllBooking(int itemId);
+    List<BookingDto> getBookersAllBooking(int bookerId, State state, Integer size, Integer from);
 
     void checkTimeForBooking(LocalDateTime start, LocalDateTime end, Integer itemId);
 }

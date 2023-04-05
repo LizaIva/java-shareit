@@ -12,15 +12,11 @@ public interface ItemStorage {
 
     Item getItemById(Integer id);
 
-    List<Item> getAllOwnersItems(Integer ownerId);
+    List<Item> getAllOwnersItems(Integer ownerId, Integer size, Integer from);
 
-    List<Item> foundAvailableItemWithNameOrDescription(String description);
-
-    List<Item> getAll();
+    List<Item> foundAvailableItemWithNameOrDescription(String description, Integer size, Integer from);
 
     Item updateItem(Integer ownerId, Item item);
-
-    Item deleteById(Integer id);
 
     void checkItem(int id);
 

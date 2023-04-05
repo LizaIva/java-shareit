@@ -16,11 +16,9 @@ public interface BookingStorage {
 
     Booking updateStatus(int bookingId, Status status, int ownerId);
 
-    List<Booking> getOwnersAllBookings(int ownerId);
+    List<Booking> getOwnersAllBookings(int ownerId, Integer size, Integer from);
 
-    List<Booking> getBookersAllBooking(int bookerId);
-
-    List<Booking> getItemsAllBooking(int itemId);
+    List<Booking> getBookersAllBooking(int bookerId, Integer size, Integer from);
 
     void checkBooking(int id);
 

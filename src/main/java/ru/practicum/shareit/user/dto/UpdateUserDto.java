@@ -1,12 +1,16 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.validation.constraints.Email;
 
 @Builder
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@DynamicUpdate
 public class UpdateUserDto {
 
     private String name;

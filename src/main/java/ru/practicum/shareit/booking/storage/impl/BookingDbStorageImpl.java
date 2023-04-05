@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.storage.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
@@ -23,6 +25,8 @@ public class BookingDbStorageImpl implements BookingStorage {
     private final BookingRepository bookingRepository;
     private final UserStorage userStorage;
     private final ItemStorage itemStorage;
+
+    private static final Sort PAGIN_SORT = Sort.by(List.of(Sort.Order.desc("start")));
 
     @Override
     public Booking put(Booking booking, Integer bookerId) {
@@ -51,19 +55,35 @@ public class BookingDbStorageImpl implements BookingStorage {
     }
 
     @Override
-    public List<Booking> getOwnersAllBookings(int ownerId) {
-        return bookingRepository.getBookingsByOwnerId(ownerId);
+    public List<Booking> getOwnersAllBookings(int ownerId, Integer size, Integer from) {
+        userStorage.checkUser(ownerId);
+
+        if (size == null || from == null) {
+            return bookingRepository.getBookingsByOwnerId(ownerId);
+        } else if (size <= 0 || from < 0) {
+            throw new ValidationException("Нельзя передавать отрицательные значения");
+        }
+
+        from = from / size;
+
+        return bookingRepository.getBookingsByOwnerId(ownerId, PageRequest.of(from, size, PAGIN_SORT))
+                .getContent();
     }
 
     @Override
-    public List<Booking> getBookersAllBooking(int bookerId) {
+    public List<Booking> getBookersAllBooking(int bookerId, Integer size, Integer from) {
         userStorage.checkUser(bookerId);
-        return bookingRepository.getBookingsByStatus(bookerId);
-    }
 
-    @Override
-    public List<Booking> getItemsAllBooking(int itemId) {
-        return null;
+        if (size == null || from == null) {
+            return bookingRepository.getBookingsByStatus(bookerId);
+        } else if (size <= 0 || from < 0) {
+            throw new ValidationException("Нельзя передавать отрицательные значения");
+        }
+
+        from = from / size;
+
+        return bookingRepository.getBookingsByStatus(bookerId, PageRequest.of(from, size, PAGIN_SORT))
+                .getContent();
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface ItemService {
 
     ItemDto getItemById(Integer itemId, Integer userId);
 
-    List<ItemDto> getOwnersItems(Integer ownerId);
+    List<ItemDto> getOwnersItems(Integer ownerId, Integer size, Integer from);
 
-    List<ItemDto> foundAvailableItemWithNameOrDescription(String description);
+    List<ItemDto> foundAvailableItemWithNameOrDescription(String description, Integer size, Integer from);
 }

@@ -1,7 +1,10 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
@@ -9,7 +12,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import java.util.List;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, Integer> {
+public interface BookingRepository extends JpaRepository<Booking, Integer>,
+        PagingAndSortingRepository<Booking, Integer> {
 
     @Query("select b " +
             "   from bookings b left join items i on b.bookedItem.id = i.id " +
@@ -22,13 +26,20 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "   where b.id = :bookingId and i.owner.id = :userId")
     Boolean isUserItemOwnerByBookingId(@Param("bookingId") int bookingId, @Param("userId") int userId);
 
+    @Query("select b from bookings b where b.booker.id= :bookerId")
+    Page<Booking> getBookingsByStatus(@Param("bookerId") int bookerId, Pageable pageable);
+
     @Query(
             value = "select * from bookings b where b.booker_id = :bookerId order by b.start_date desc;",
             nativeQuery = true
     )
-    List<Booking> getBookingsByStatus(
-            @Param("bookerId") int bookerId
-    );
+    List<Booking> getBookingsByStatus(@Param("bookerId") int bookerId);
+
+    @Query("select b from bookings b " +
+            "left join items i on b.bookedItem.id = i.id " +
+            "where i.owner.id = :ownerId"
+    )
+    Page<Booking> getBookingsByOwnerId(@Param("ownerId") int ownerId, Pageable pageable);
 
     @Query(
             value = "select * from bookings b " +
@@ -37,27 +48,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             nativeQuery = true
     )
     List<Booking> getBookingsByOwnerId(@Param("ownerId") int ownerId);
-
-    @Query(
-            value = "select * " +
-                    "from bookings b " +
-                    "where b.item_id = :itemId AND b.status_id = 1 " +
-                    "order by b.start_date desc " +
-                    "limit 1",
-            nativeQuery = true
-    )
-    Booking findByLastTimeBooking(@Param("itemId") int itemId);
-
-    @Query(
-            value = "select * " +
-                    "from bookings b " +
-                    "where b.item_id = :itemId AND b.status_id = 1 " +
-                    "order by b.start_date " +
-                    "limit 1 offset 1",
-            nativeQuery = true
-    )
-    Booking findNextTimeBooking(@Param("itemId") int itemId);
-
 
     @Query("select count(*) > 0 " +
             "   from bookings b " +

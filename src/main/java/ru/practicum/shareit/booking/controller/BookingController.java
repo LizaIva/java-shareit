@@ -48,24 +48,22 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getOwnersAllBookingsViaStatus(
             @RequestHeader(USER_ID_HEADER) Integer ownerId,
-            @RequestParam(name = "state", required = false, defaultValue = "ALL") String stringState) {
+            @RequestParam(name = "state", required = false, defaultValue = "ALL") String stringState,
+            @RequestParam(name = "from", required = false) Integer from,
+            @RequestParam(name = "size", required = false) Integer size) {
 
         log.info("Получен запрос всех букингов владельца с  id = {}", ownerId);
-        return bookingService.getOwnersAllBookingsViaStatus(ownerId, fromValue(stringState));
+        return bookingService.getOwnersAllBookingsViaStatus(ownerId, fromValue(stringState), size, from);
     }
 
     @GetMapping
     public List<BookingDto> getBookersAllBooking(
             @RequestHeader(USER_ID_HEADER) Integer bookerId,
-            @RequestParam(name = "state", required = false, defaultValue = "ALL") String stringState) {
+            @RequestParam(name = "state", required = false, defaultValue = "ALL") String stringState,
+            @RequestParam(name = "from", required = false) Integer from,
+            @RequestParam(name = "size", required = false) Integer size) {
         log.info("Получен запрос всех букингов пользователя с  id = {}", bookerId);
-        return bookingService.getBookersAllBooking(bookerId, fromValue(stringState));
-    }
-
-    @GetMapping("/items/{itemId}")
-    public List<BookingDto> getItemsAllBooking(@PathVariable Integer itemId) {
-        log.info("Получен запрос всех букингов предмета с  id = {}", itemId);
-        return bookingService.getItemsAllBooking(itemId);
+        return bookingService.getBookersAllBooking(bookerId, fromValue(stringState), size, from);
     }
 }
 
