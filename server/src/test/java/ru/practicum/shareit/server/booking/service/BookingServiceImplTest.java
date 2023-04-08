@@ -495,11 +495,10 @@ class BookingServiceImplTest {
     @Test
     void getBookersAllBooking() {
         UserDto ownerDto = UserDto.builder()
-                .id(1)
                 .name("Liza")
                 .email("iva@mail.ru")
                 .build();
-        userService.put(ownerDto);
+        UserDto createdOwner = userService.put(ownerDto);
 
         ItemDto itemDto = ItemDto.builder()
                 .id(1)
@@ -508,7 +507,7 @@ class BookingServiceImplTest {
                 .available(true)
                 .comments(Collections.emptyList())
                 .build();
-        itemService.put(ownerDto.getId(), itemDto);
+        itemService.put(createdOwner.getId(), itemDto);
 
         UserDto bookerDto1 = UserDto.builder()
                 .id(2)
@@ -565,7 +564,7 @@ class BookingServiceImplTest {
                 .name("Nikita")
                 .email("klp@mail.ru")
                 .build();
-        userService.put(ownerDto2);
+        UserDto createdUser2 = userService.put(ownerDto2);
 
         ItemDto itemDto2 = ItemDto.builder()
                 .id(2)
@@ -574,7 +573,7 @@ class BookingServiceImplTest {
                 .available(true)
                 .comments(Collections.emptyList())
                 .build();
-        itemService.put(ownerDto2.getId(), itemDto2);
+        itemService.put(createdUser2.getId(), itemDto2);
 
         BookingDto bookingDto3 = BookingDto.builder()
                 .id(3)
