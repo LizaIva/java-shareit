@@ -501,13 +501,12 @@ class BookingServiceImplTest {
         UserDto createdOwner = userService.put(ownerDto);
 
         ItemDto itemDto = ItemDto.builder()
-                .id(1)
                 .name("Молоток")
                 .description("Для гвоздей")
                 .available(true)
                 .comments(Collections.emptyList())
                 .build();
-        itemService.put(createdOwner.getId(), itemDto);
+        ItemDto createdItem = itemService.put(createdOwner.getId(), itemDto);
 
         UserDto bookerDto1 = UserDto.builder()
                 .id(2)
@@ -516,48 +515,23 @@ class BookingServiceImplTest {
                 .build();
         UserDto createdBooker1 = userService.put(bookerDto1);
 
-
-        BookingDto bookingDto1 = BookingDto.builder()
-                .id(1)
+        CreateBookingRequestDto createBookingRequestDto1 = CreateBookingRequestDto.builder()
                 .start(LocalDateTime.now().plusDays(1))
                 .end(LocalDateTime.now().plusDays(3))
                 .status(Status.WAITING)
-                .item(itemDto)
-                .itemId(itemDto.getId())
-                .booker(createdBooker1)
-                .bookerId(createdBooker1.getId())
+                .itemId(createdItem.getId())
                 .build();
+        BookingDto createdBooking = bookingService.put(createBookingRequestDto1, createdBooker1.getId());
 
-        CreateBookingRequestDto createBookingRequestDto1 = CreateBookingRequestDto.builder()
-                .id(1)
-                .start(bookingDto1.getStart())
-                .end(bookingDto1.getEnd())
-                .status(Status.WAITING)
-                .itemId(1)
-                .build();
-        bookingService.put(createBookingRequestDto1, createdBooker1.getId());
-
-        BookingDto bookingDto2 = BookingDto.builder()
-                .id(2)
+        CreateBookingRequestDto createBookingRequestDto2 = CreateBookingRequestDto.builder()
                 .start(LocalDateTime.now().plusDays(7))
                 .end(LocalDateTime.now().plusDays(9))
                 .status(Status.WAITING)
-                .item(itemDto)
-                .itemId(itemDto.getId())
-                .booker(createdBooker1)
-                .bookerId(createdBooker1.getId())
+                .itemId(createdItem.getId())
                 .build();
-
-        CreateBookingRequestDto createBookingRequestDto2 = CreateBookingRequestDto.builder()
-                .id(2)
-                .start(bookingDto2.getStart())
-                .end(bookingDto2.getEnd())
-                .status(Status.WAITING)
-                .itemId(1)
-                .build();
-        bookingService.put(createBookingRequestDto2, createdBooker1.getId());
-        bookingService.updateStatus(bookingDto2.getId(), false, ownerDto.getId());
-        BookingDto bookingDto2AfterUpdate = bookingService.getBookingById(bookingDto2.getId(), ownerDto.getId());
+        BookingDto createBooking2 = bookingService.put(createBookingRequestDto2, createdBooker1.getId());
+        bookingService.updateStatus(createBooking2.getId(), false, createdOwner.getId());
+        BookingDto bookingDto2AfterUpdate = bookingService.getBookingById(createBooking2.getId(), createdOwner.getId());
 
         UserDto ownerDto2 = UserDto.builder()
                 .id(3)
@@ -567,50 +541,37 @@ class BookingServiceImplTest {
         UserDto createdUser2 = userService.put(ownerDto2);
 
         ItemDto itemDto2 = ItemDto.builder()
-                .id(2)
                 .name("Коньки")
                 .description("Детские")
                 .available(true)
                 .comments(Collections.emptyList())
                 .build();
-        itemService.put(createdUser2.getId(), itemDto2);
+        ItemDto createdItem2 = itemService.put(createdUser2.getId(), itemDto2);
 
-        BookingDto bookingDto3 = BookingDto.builder()
-                .id(3)
+        CreateBookingRequestDto createBookingRequestDto3 = CreateBookingRequestDto.builder()
                 .start(LocalDateTime.now().plusDays(1))
                 .end(LocalDateTime.now().plusDays(3))
                 .status(Status.WAITING)
-                .item(itemDto2)
-                .itemId(itemDto2.getId())
-                .booker(createdBooker1)
-                .bookerId(createdBooker1.getId())
+                .itemId(createdItem2.getId())
                 .build();
+        BookingDto createdBooking3 = bookingService.put(createBookingRequestDto3, createdBooker1.getId());
 
-        CreateBookingRequestDto createBookingRequestDto3 = CreateBookingRequestDto.builder()
-                .id(3)
-                .start(bookingDto3.getStart())
-                .end(bookingDto3.getEnd())
-                .status(Status.WAITING)
-                .itemId(2)
-                .build();
-        bookingService.put(createBookingRequestDto3, createdBooker1.getId());
-
-        List<BookingDto> bookingsForBooker1 = List.of(bookingDto2AfterUpdate, bookingDto3, bookingDto1);
+        List<BookingDto> bookingsForBooker1 = List.of(bookingDto2AfterUpdate, createdBooking3, createdBooking);
         List<BookingDto> actualBookingsForBooker1 = bookingService.getBookersAllBooking(createdBooker1.getId(), State.ALL, null, null);
 
         assertEquals(bookingsForBooker1, actualBookingsForBooker1);
 
-        List<BookingDto> bookingsForBooker1WithState = List.of(bookingDto1, bookingDto3);
+        List<BookingDto> bookingsForBooker1WithState = List.of(createdBooking, createdBooking3);
         List<BookingDto> actualBookingsForBooker1WithState = bookingService.getBookersAllBooking(createdBooker1.getId(), State.WAITING, null, null);
 
         assertEquals(bookingsForBooker1WithState, actualBookingsForBooker1WithState);
 
-        List<BookingDto> bookingsForBooker1WithStateFuture = List.of(bookingDto3, bookingDto1);
+        List<BookingDto> bookingsForBooker1WithStateFuture = List.of(createdBooking3, createdBooking);
         List<BookingDto> actualBookingsForBooker1WithStateFuture = bookingService.getBookersAllBooking(createdBooker1.getId(), State.FUTURE, null, null);
 
         assertEquals(bookingsForBooker1WithStateFuture, actualBookingsForBooker1WithStateFuture);
 
-        List<BookingDto> bookingsForBooker1WithStateFutureWithPagination = List.of(bookingDto3);
+        List<BookingDto> bookingsForBooker1WithStateFutureWithPagination = List.of(createdBooking3);
         List<BookingDto> actualBookingsForBooker1WithPagination =
                 bookingService.getBookersAllBooking(createdBooker1.getId(), State.FUTURE, 1, 1);
 
